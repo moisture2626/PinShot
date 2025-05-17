@@ -16,12 +16,13 @@ namespace PinShot.Scenes.MainGame.Player {
         private PlayerShooting _playerShooting;
         [SerializeField] private InputAction _moveAction;
         [SerializeField] private InputAction _shotAction;
-        private float _lastShotTime;
         private bool _initialized = false;
-        public void Initialize(PlayerControlSettings playerControlSettings, PlayerView playerView) {
+        public void Initialize(PlayerControlSettings playerControlSettings, PlayerView playerView, MissileLauncher missileLauncher) {
             _playerControlSettings = playerControlSettings;
             _playerView = playerView;
-            _missileLauncher = playerView.GetComponentInChildren<MissileLauncher>();
+
+            _missileLauncher = missileLauncher;
+            _missileLauncher.Initialize();
 
             _moveAction.Enable();
             _shotAction.Enable();
@@ -31,6 +32,7 @@ namespace PinShot.Scenes.MainGame.Player {
             _playerMovement.Initialize(_playerControlSettings, _playerView, _leftLimit, _rightLimit);
             _playerShooting = new PlayerShooting();
             _playerShooting.Initialize(_playerControlSettings, _missileLauncher);
+
 
             _initialized = true;
         }

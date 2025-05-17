@@ -13,11 +13,11 @@ TagManager:
   - 
   - Water
   - UI
-  - obstacle
-  - trigger
+  - ball
+  - cant_enter
   - player
   - obstacle
-  - shot
+  - bullet
   - 
   - 
   - 

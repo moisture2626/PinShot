@@ -73,6 +73,7 @@ GameObject:
   - component: {fileID: 4546520353648820528}
   - component: {fileID: 7275272640685691048}
   - component: {fileID: 3383611324772615395}
+  - component: {fileID: 5518741714210952942}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -112,6 +113,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _presenter: {fileID: 3383611324772615395}
   _view: {fileID: 8577540638372644640}
+  _missileLauncher: {fileID: 5518741714210952942}
 --- !u!114 &3383611324772615395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,6 +162,20 @@ MonoBehaviour:
       m_Action: Shot
       m_Flags: 0
     m_Flags: 0
+--- !u!114 &5518741714210952942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2521514552265067635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ff7a1fa84314b74c831067e773fff60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _missilePrefab: {fileID: 8177500137895065276, guid: b02c508b02a139944ab0322224885184, type: 3}
+  _missileSpawnPoint: {fileID: 619210175362737869}
 --- !u!1001 &3656568492679366354
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -168,6 +184,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4546520353648820528}
     m_Modifications:
+    - target: {fileID: 286031205013681784, guid: 4d36b8e3146a5c141a893284f5977ee2, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 853328294352309010, guid: 4d36b8e3146a5c141a893284f5977ee2, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3513642601916867956, guid: 4d36b8e3146a5c141a893284f5977ee2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -224,6 +248,11 @@ PrefabInstance:
 --- !u!4 &179100544900866982 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3513642601916867956, guid: 4d36b8e3146a5c141a893284f5977ee2, type: 3}
+  m_PrefabInstance: {fileID: 3656568492679366354}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &619210175362737869 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4190984231214096415, guid: 4d36b8e3146a5c141a893284f5977ee2, type: 3}
   m_PrefabInstance: {fileID: 3656568492679366354}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &8577540638372644640 stripped

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8176313354256618862}
   - component: {fileID: 1611066075500415131}
   - component: {fileID: 1715765144860615418}
-  m_Layer: 6
+  m_Layer: 9
   m_Name: Circle (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 4504800018277773953}
   - component: {fileID: 8297176987486142642}
   - component: {fileID: 2102462510721126685}
-  m_Layer: 6
+  m_Layer: 9
   m_Name: bumper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -282,7 +282,7 @@ GameObject:
   - component: {fileID: 378947875608996670}
   - component: {fileID: 2489147526234540375}
   - component: {fileID: 312432325871116797}
-  m_Layer: 6
+  m_Layer: 9
   m_Name: Circle (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -406,7 +406,7 @@ GameObject:
   - component: {fileID: 8074182608014886064}
   - component: {fileID: 1483514497351709123}
   m_Layer: 7
-  m_Name: collision
+  m_Name: trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -457,7 +457,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -484,7 +484,7 @@ GameObject:
   - component: {fileID: 1920828922678084356}
   - component: {fileID: 8719387959469066749}
   - component: {fileID: 8258551520761782155}
-  m_Layer: 6
+  m_Layer: 9
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -606,7 +606,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7889463413792340333}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Stage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -646,7 +646,7 @@ GameObject:
   - component: {fileID: 7305542918991105604}
   - component: {fileID: 6141905022555650238}
   - component: {fileID: 6344071290283026834}
-  m_Layer: 6
+  m_Layer: 9
   m_Name: Walll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -879,7 +879,7 @@ GameObject:
   - component: {fileID: 5490956895275413398}
   - component: {fileID: 6481040321123974369}
   - component: {fileID: 5842244913524679840}
-  m_Layer: 6
+  m_Layer: 9
   m_Name: bumper (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -251,7 +251,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerInjector: {fileID: 9114662402087261300}
-  _playerControlSettings: {fileID: 11400000, guid: 9da0dc708c8ca344ea4a256dee473da8, type: 2}
 --- !u!4 &1277621313
 Transform:
   m_ObjectHideFlags: 0
