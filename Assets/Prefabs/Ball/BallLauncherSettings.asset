@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: BallLauncherSettings
   m_EditorClassIdentifier: 
   _launchForce: 10
-  _launchInterval: 1
+  _launchInterval: 30
