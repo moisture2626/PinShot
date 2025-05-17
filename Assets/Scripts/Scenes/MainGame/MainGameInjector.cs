@@ -14,12 +14,16 @@ namespace PinShot.Scenes.MainGame {
         [SerializeField] private PlayerInjector _playerInjector;
         [SerializeField] private BallManagerInjector _ballManagerInjector;
         [SerializeField] private MainGameManager _mainGameManager;
+        [SerializeField] private Canvas _uiCanvas;
 
         private void Awake() {
             Inject(destroyCancellationToken).Forget();
         }
 
         private async UniTask Inject(CancellationToken token) {
+            _uiCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+            _uiCanvas.worldCamera = Camera.main;
+
             await UniTask.WaitUntil(() => MasterDataManager.Instance, cancellationToken: token);
             _ = new EventManager<GameStateEvent>();
 

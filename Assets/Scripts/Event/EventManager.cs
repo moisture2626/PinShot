@@ -14,7 +14,6 @@ namespace PinShot.Event {
     public class EventManager<TEvent> : IDisposable where TEvent : struct, IEvent {
         private static EventManager<TEvent> _instance;
         private Subject<TEvent> _subject;
-        private Entity<bool> _entity = new(false);
         private static readonly object _lock = new object();
         private TEvent _lastEvent;
         public static TEvent LastEvent => GetInstance()._lastEvent;
@@ -47,7 +46,21 @@ namespace PinShot.Event {
         }
 
         /// <summary>
-        /// イベントを購読
+        /// イベントの購読
+        /// </summary>
+        /// <param name="addToComponent"></param>
+        /// <param name="onNext"></param>
+        /// <returns></returns>
+        public static IDisposable Subscribe(MonoBehaviour addToComponent, Action<TEvent> onNext) {
+            var instance = GetInstance();
+            var subject = instance._subject;
+            return subject.Subscribe(ev => {
+                onNext(ev);
+            }).RegisterTo(addToComponent.destroyCancellationToken);
+        }
+
+        /// <summary>
+        /// イベントを購読(async)
         /// </summary>
         /// <param name="addToComponent"></param>
         /// <param name="onNext"></param>
@@ -55,9 +68,8 @@ namespace PinShot.Event {
         public static IDisposable SubscribeAwait(MonoBehaviour addToComponent, Func<TEvent, CancellationToken, ValueTask> onNext) {
             var instance = GetInstance();
             var subject = instance._subject;
-
+            var entity = new Entity<bool>(false);
             return subject.SubscribeAwait(async (ev, t) => {
-                var entity = instance._entity;
                 if (entity.Value) {
                     return;
                 }
