@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bbef6ecdf4a88642ab3c9b403ca4b6f, type: 3}
   m_Name: PlayerControllSettings
   m_EditorClassIdentifier: 
-  _moveSpeed: 5
+  _moveSpeed: 1
   _shootInterval: 1

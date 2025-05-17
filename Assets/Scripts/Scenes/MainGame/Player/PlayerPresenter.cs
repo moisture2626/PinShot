@@ -1,3 +1,4 @@
+using PinShot.Database;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
