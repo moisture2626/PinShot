@@ -1,60 +1,73 @@
-using PinShot.Scenes.MainGame;
-using PinShot.Scenes.MainGame.Ball;
+using PinShot.Database;
 using UnityEngine;
 
-public class BallObject : MonoBehaviour {
-    private Collider2D _collider;
-    public Collider2D Collider2D {
-        get {
-            if (_collider == null) {
-                _collider = GetComponent<Collider2D>();
+namespace PinShot.Scenes.MainGame.Ball {
+    public class BallObject : MonoBehaviour {
+        private Collider2D _collider;
+        public Collider2D Collider2D {
+            get {
+                if (_collider == null) {
+                    _collider = GetComponent<Collider2D>();
+                }
+                return _collider;
             }
-            return _collider;
         }
-    }
-    private Rigidbody2D _rigidbody;
-    public Rigidbody2D Rigidbody2D {
-        get {
-            if (_rigidbody == null) {
-                _rigidbody = GetComponent<Rigidbody2D>();
+        private Rigidbody2D _rigidbody;
+        public Rigidbody2D Rigidbody2D {
+            get {
+                if (_rigidbody == null) {
+                    _rigidbody = GetComponent<Rigidbody2D>();
+                }
+                return _rigidbody;
             }
-            return _rigidbody;
         }
-    }
 
-    private Health _health;
-    public Health Health => _health ??= new();
+        private Health _health;
+        public Health Health => _health;
 
-    /// <summary>
-    /// トリガー検出
-    /// </summary>
-    /// <param name="collision"></param>
-    private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.gameObject.GetComponent<IBallDamageDealer>() is IBallDamageDealer damageDealer) {
-            TakeDamage(damageDealer, collision.ClosestPoint(transform.position));
+        private BallSettings _settings;
+
+        public void Initialize(BallSettings settings) {
+            _settings = settings;
+            _health ??= new Health();
+            _health.Initialize(_settings.Health);
+            Rigidbody2D.gravityScale = _settings.GravityScale;
         }
-    }
 
-    /// <summary>
-    /// 衝突検出
-    /// </summary>
-    /// <param name="collision"></param>
-    private void OnCollisionEnter2D(Collision2D collision) {
-        if (collision.gameObject.GetComponent<IBallDamageDealer>() is IBallDamageDealer damageDealer) {
-            TakeDamage(damageDealer, collision.GetContact(0).point);
+        /// <summary>
+        /// トリガー検出
+        /// </summary>
+        /// <param name="collision"></param>
+        private void OnTriggerEnter2D(Collider2D collision) {
+            if (collision.gameObject.GetComponent<IBallDamageDealer>() is IBallDamageDealer damageDealer) {
+                TakeDamage(damageDealer, collision.ClosestPoint(transform.position));
+            }
         }
+
+        /// <summary>
+        /// 衝突検出
+        /// </summary>
+        /// <param name="collision"></param>
+        private void OnCollisionEnter2D(Collision2D collision) {
+            if (collision.gameObject.GetComponent<IBallDamageDealer>() is IBallDamageDealer damageDealer) {
+                TakeDamage(damageDealer, collision.GetContact(0).point);
+            }
+        }
+
+        /// <summary>
+        /// ダメージを受ける
+        /// </summary>
+        /// <param name="damage"></param>
+        private void TakeDamage(IBallDamageDealer damageDealer, Vector2 hitPosition) {
+            var (damage, impact) = damageDealer.OnHitBall(hitPosition);
+            _health.TakeDamage(damage);
+            var direction = (hitPosition - (Vector2)transform.position).normalized;
+            Rigidbody2D.AddForce(direction * impact, ForceMode2D.Impulse);
+        }
+
+        void OnDestroy() {
+            _health?.Dispose();
+        }
+
     }
-
-    /// <summary>
-    /// ダメージを受ける
-    /// </summary>
-    /// <param name="damage"></param>
-    private void TakeDamage(IBallDamageDealer damageDealer, Vector2 hitPosition) {
-        var (damage, impact) = damageDealer.OnHitBall(hitPosition);
-        Health.TakeDamage(damage);
-        var direction = (hitPosition - (Vector2)transform.position).normalized;
-        Rigidbody2D.AddForce(direction * impact, ForceMode2D.Impulse);
-    }
-
-
 }
