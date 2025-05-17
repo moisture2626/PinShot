@@ -12,6 +12,7 @@ namespace PinShot.Scenes.MainGame.Ball {
     /// </summary>
     public class BallLauncher : MonoBehaviour {
         [SerializeField] private BallObject _ballPrefab;
+        [SerializeField] private BallLaunchTrigger _trigger;
         private ObjectPool<BallObject> _ballPool;
         private List<BallObject> _activeBalls = new();
         private BallSettings _ballSettings;
@@ -24,6 +25,7 @@ namespace PinShot.Scenes.MainGame.Ball {
         public void Initialize(BallLauncherSettings launcherSettings, BallSettings ballSettings) {
             _ballSettings = ballSettings;
             _launcherSettings = launcherSettings;
+            _trigger.Initialize(launcherSettings);
             _ballPool = new ObjectPool<BallObject>(
                 CreateBall,
                 OnGetBall,
@@ -43,6 +45,11 @@ namespace PinShot.Scenes.MainGame.Ball {
             IntervalLaunch(_timerCancellation.Token).Forget();
         }
 
+        /// <summary>
+        /// 一定時間ごとに発射する
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         private async UniTask IntervalLaunch(CancellationToken token) {
             float elapsedTime = 0;
             while (!token.IsCancellationRequested) {
@@ -50,7 +57,7 @@ namespace PinShot.Scenes.MainGame.Ball {
                 var remain = _launcherSettings.LaunchInterval - elapsedTime;
                 _timerSubject.OnNext(remain);
                 if (remain <= 0) {
-                    LaunchBall();
+                    LaunchBall(token).Forget();
                     elapsedTime = 0;
                 }
                 await UniTask.Yield(token);
@@ -60,9 +67,12 @@ namespace PinShot.Scenes.MainGame.Ball {
         /// <summary>
         /// 1発だけ発射
         /// </summary>
-        private void LaunchBall() {
+        private async UniTask LaunchBall(CancellationToken token) {
             var ball = _ballPool.Get();
-            ball.Rigidbody2D.AddForce(_launcherSettings.LaunchForce * Vector2.up, ForceMode2D.Impulse);
+
+            // 耐久力がなくなったらプールに戻す
+            await UniTask.WaitWhile(() => ball.Health.Current.Value > 0, cancellationToken: token);
+            _ballPool.Release(ball);
         }
 
         void OnDestroy() {

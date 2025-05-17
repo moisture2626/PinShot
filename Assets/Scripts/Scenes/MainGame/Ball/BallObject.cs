@@ -31,7 +31,9 @@ namespace PinShot.Scenes.MainGame.Ball {
             _settings = settings;
             _health ??= new Health();
             _health.Initialize(_settings.Health);
-            Rigidbody2D.gravityScale = _settings.GravityScale;
+            Rigidbody2D.gravityScale = 0;
+            Collider2D.isTrigger = true;
+            Rigidbody2D.mass = _settings.Mass;
         }
 
         /// <summary>
@@ -41,6 +43,29 @@ namespace PinShot.Scenes.MainGame.Ball {
         private void OnTriggerEnter2D(Collider2D collision) {
             if (collision.gameObject.GetComponent<IBallDamageDealer>() is IBallDamageDealer damageDealer) {
                 TakeDamage(damageDealer, collision.ClosestPoint(transform.position));
+            }
+        }
+
+        /// <summary>
+        /// トリガー中の処理
+        /// </summary>
+        /// <param name="collision"></param>
+        private void OnTriggerStay2D(Collider2D collision) {
+            if (collision.gameObject.GetComponent<IBallEnter>() is IBallEnter ballEnter) {
+                var velocity = ballEnter.OnStayBall(collision.ClosestPoint(transform.position));
+                Rigidbody2D.linearVelocity = velocity;
+            }
+        }
+
+        /// <summary>
+        /// トリガーから出たときの処理
+        /// </summary>
+        /// <param name="collision"></param>
+        void OnTriggerExit2D(Collider2D collision) {
+            if (collision.gameObject.GetComponent<IBallEnter>() is IBallEnter ballEnter) {
+                ballEnter.OnExitBall(collision.ClosestPoint(transform.position));
+                Collider2D.isTrigger = false;
+                Rigidbody2D.gravityScale = _settings.GravityScale;
             }
         }
 
@@ -61,8 +86,12 @@ namespace PinShot.Scenes.MainGame.Ball {
         private void TakeDamage(IBallDamageDealer damageDealer, Vector2 hitPosition) {
             var (damage, impact) = damageDealer.OnHitBall(hitPosition);
             _health.TakeDamage(damage);
-            var direction = (hitPosition - (Vector2)transform.position).normalized;
-            Rigidbody2D.AddForce(direction * impact, ForceMode2D.Impulse);
+
+            if (impact > 0) {
+                var direction = ((Vector2)transform.position - hitPosition).normalized;
+                Rigidbody2D.linearVelocity = Vector2.zero;
+                Rigidbody2D.AddForce(direction * impact, ForceMode2D.Impulse);
+            }
         }
 
         void OnDestroy() {

@@ -123,10 +123,10 @@ namespace PinShot.Scenes.MainGame.Player {
         /// 隕石との衝突時の処理
         /// </summary>
         /// <returns></returns>
-        public (float, float) OnHitBall(Vector2 hitPosition) {
+        public (float damage, float impact) OnHitBall(Vector2 hitPosition) {
             // 2回以上ぶつからないようにする
             Collider2D.enabled = false;
-            return (_settings.Damage, _settings.Damage);
+            return (_settings.Damage, _settings.ExplosionForce);
         }
 
         void OnDestroy() {

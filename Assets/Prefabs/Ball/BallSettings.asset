@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: BallSettings
   m_EditorClassIdentifier: 
   _gravityScale: 1
+  _mass: 0.2
   _health: 10

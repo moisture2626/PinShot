@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 329ccbdd3019718429177ce1d1015122, type: 3}
   m_Name: MissileSettings
   m_EditorClassIdentifier: 
-  _data: {fileID: 0}
   _speed: 10
   _damage: 1
   _explosionLifeTime: 0.3
   _explosionEffectLifetime: 1
+  _explosionForce: 5
