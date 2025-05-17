@@ -102,7 +102,6 @@ namespace PinShot.Scenes.MainGame.Player {
                 return await _triggerTaskSource.Task.AttachExternalCancellation(token);
             }
             catch (System.OperationCanceledException) {
-                Debug.Log("トリガー待機がキャンセルされました");
                 throw;
             }
         }
@@ -114,7 +113,6 @@ namespace PinShot.Scenes.MainGame.Player {
         private void OnTriggerEnter2D(Collider2D other) {
             // すでに完了していない場合のみCompletionSourceを完了させる
             if (_triggerTaskSource != null && !_triggerTaskSource.Task.Status.IsCompleted()) {
-                Debug.Log($"トリガー検出: {other.gameObject.name}");
                 _triggerTaskSource.TrySetResult(other);
             }
         }
