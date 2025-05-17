@@ -22,7 +22,6 @@ namespace PinShot.Scenes.MainGame.Player {
             _playerView = playerView;
 
             _missileLauncher = missileLauncher;
-            _missileLauncher.Initialize();
 
             _moveAction.Enable();
             _shotAction.Enable();

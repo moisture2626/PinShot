@@ -1,6 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using PinShot.Database;
 using UnityEngine;
 
 namespace PinShot.Scenes.MainGame.Player {
@@ -28,12 +29,15 @@ namespace PinShot.Scenes.MainGame.Player {
             }
         }
 
+        private MissileSettings _settings;
+
         // 衝突待機用のUniTaskCompletionSource
         private UniTaskCompletionSource<Collider2D> _triggerTaskSource;
 
-        public void Initialize() {
+        public void Initialize(MissileSettings settings) {
             _missileView.enabled = true;
             _explosionView.enabled = false;
+            _settings = settings;
 
             _triggerTaskSource = new UniTaskCompletionSource<Collider2D>();
         }
@@ -45,8 +49,8 @@ namespace PinShot.Scenes.MainGame.Player {
         /// <param name="speed"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async UniTask FireFlow(Vector2 direction, float speed, CancellationToken token) {
-            Rigidbody2D.linearVelocity = direction.normalized * speed;
+        public async UniTask FireFlow(Vector2 direction, CancellationToken token) {
+            Rigidbody2D.linearVelocity = direction.normalized * _settings.Speed;
             Collider2D.enabled = true;
 
             // 衝突するまで待機
@@ -54,9 +58,10 @@ namespace PinShot.Scenes.MainGame.Player {
             Rigidbody2D.linearVelocity = Vector2.zero;
 
             // 爆発
+            // 爆発後も当たり判定を残す、エフェクトはさらに長い時間フェードアウトさせる
             await UniTask.WhenAll(
-                ExplosionFlow(token),
-                ExplosionFadeOutFlow(token)
+                ExplosionFlow(_settings.ExplosionLifeTime, token),
+                ExplosionFadeOutFlow(_settings.ExplosionEffectLifetime, token)
             );
         }
 
@@ -65,11 +70,11 @@ namespace PinShot.Scenes.MainGame.Player {
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        private async UniTask ExplosionFlow(CancellationToken token) {
+        private async UniTask ExplosionFlow(float lifeTime, CancellationToken token) {
             // 衝突すると爆発エフェクトを表示
             _missileView.enabled = false;
             _explosionView.enabled = true;
-            await UniTask.Delay(300, cancellationToken: token);
+            await UniTask.Delay((int)(lifeTime * 1000), cancellationToken: token);
             Collider2D.enabled = false;
         }
 
@@ -78,10 +83,10 @@ namespace PinShot.Scenes.MainGame.Player {
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        private async UniTask ExplosionFadeOutFlow(CancellationToken token) {
+        private async UniTask ExplosionFadeOutFlow(float lifeTime, CancellationToken token) {
             // 1秒にしておく
             _explosionView.color = Color.white;
-            await _explosionView.DOFade(0, 1f).SetEase(Ease.Linear).WithCancellation(token);
+            await _explosionView.DOFade(0, lifeTime).SetEase(Ease.Linear).WithCancellation(token);
         }
 
         /// <summary>
