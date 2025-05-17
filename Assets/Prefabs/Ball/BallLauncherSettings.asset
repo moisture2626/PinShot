@@ -9,11 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 329ccbdd3019718429177ce1d1015122, type: 3}
-  m_Name: MissileSettings
+  m_Script: {fileID: 11500000, guid: 087f61abe33e5024e8664c3290f20c0d, type: 3}
+  m_Name: BallLauncherSettings
   m_EditorClassIdentifier: 
-  _speed: 10
-  _damage: 1
-  _explosionLifeTime: 0.3
-  _explosionEffectLifetime: 1
-  _explosionForce: 5
+  _launchForce: 10
+  _launchInterval: 30

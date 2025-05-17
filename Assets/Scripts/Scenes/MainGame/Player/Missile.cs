@@ -2,10 +2,11 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using PinShot.Database;
+using PinShot.Scenes.MainGame.Ball;
 using UnityEngine;
 
 namespace PinShot.Scenes.MainGame.Player {
-    public class Missile : MonoBehaviour {
+    public class Missile : MonoBehaviour, IBallDamageDealer {
         [SerializeField] private SpriteRenderer _missileView;
         public SpriteRenderer MissileView => _missileView;
         [SerializeField] private SpriteRenderer _explosionView;
@@ -101,7 +102,6 @@ namespace PinShot.Scenes.MainGame.Player {
                 return await _triggerTaskSource.Task.AttachExternalCancellation(token);
             }
             catch (System.OperationCanceledException) {
-                Debug.Log("トリガー待機がキャンセルされました");
                 throw;
             }
         }
@@ -113,9 +113,18 @@ namespace PinShot.Scenes.MainGame.Player {
         private void OnTriggerEnter2D(Collider2D other) {
             // すでに完了していない場合のみCompletionSourceを完了させる
             if (_triggerTaskSource != null && !_triggerTaskSource.Task.Status.IsCompleted()) {
-                Debug.Log($"トリガー検出: {other.gameObject.name}");
                 _triggerTaskSource.TrySetResult(other);
             }
+        }
+
+        /// <summary>
+        /// 隕石との衝突時の処理
+        /// </summary>
+        /// <returns></returns>
+        public (float damage, float impact) OnHitBall(Vector2 hitPosition) {
+            // 2回以上ぶつからないようにする
+            Collider2D.enabled = false;
+            return (_settings.Damage, _settings.ExplosionForce);
         }
 
         void OnDestroy() {

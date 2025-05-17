@@ -14,7 +14,6 @@ namespace PinShot.Scenes.Title {
             // Canvasを取得
             _canvas = GetComponent<Canvas>();
             if (_canvas == null) {
-                Debug.LogError("Canvas component not found on TitleView.");
                 return;
             }
 
