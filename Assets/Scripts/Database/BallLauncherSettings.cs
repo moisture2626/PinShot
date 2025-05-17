@@ -1,8 +1,8 @@
 using UnityEngine;
 
 namespace PinShot.Database {
-    [CreateAssetMenu(fileName = "BallLauncherSettings", menuName = "Scriptable Objects/BallLauncherSettings")]
-    public class BallLauncherSettings : BaseSingleTable<BallLauncherSettings> {
+    [CreateAssetMenu(fileName = "BallManagerSettings", menuName = "Scriptable Objects/BallManagerSettings")]
+    public class BallManagerSettings : BaseSingleTable<BallManagerSettings> {
         [SerializeField] private float _launchForce = 10f;
         [SerializeField] private float _launchInterval = 1f;
 

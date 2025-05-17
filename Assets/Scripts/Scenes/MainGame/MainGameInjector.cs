@@ -11,7 +11,8 @@ namespace PinShot.Scenes.MainGame {
     /// </summary>
     public class MainGameInjector : MonoBehaviour {
         [SerializeField] private PlayerInjector _playerInjector;
-        [SerializeField] private BallLauncherInjector _ballLauncherInjector;
+        [SerializeField]
+        private BallManagerInjector _ballManagerInjector;
 
         private void Awake() {
             Inject(destroyCancellationToken).Forget();
@@ -20,7 +21,7 @@ namespace PinShot.Scenes.MainGame {
         private async UniTask Inject(CancellationToken token) {
             await UniTask.WaitUntil(() => MasterDataManager.Instance, cancellationToken: token);
             _playerInjector.Initialize();
-            _ballLauncherInjector.Initialize();
+            _ballManagerInjector.Initialize();
         }
     }
 }

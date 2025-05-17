@@ -4,7 +4,7 @@ using UnityEngine;
 namespace PinShot.Scenes.MainGame.Ball {
     public class BallLaunchTrigger : MonoBehaviour, IBallEnter {
         private float _launchVelocity;
-        public void Initialize(BallLauncherSettings settings) {
+        public void Initialize(BallManagerSettings settings) {
             _launchVelocity = settings.LaunchForce;
 
         }
