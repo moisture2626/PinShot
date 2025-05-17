@@ -1,3 +1,6 @@
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using PinShot.Database;
 using PinShot.Scenes.MainGame.Player;
 using UnityEngine;
 
@@ -9,6 +12,11 @@ namespace PinShot.Scenes.MainGame {
         [SerializeField] private PlayerInjector _playerInjector;
 
         private void Awake() {
+            Inject(destroyCancellationToken).Forget();
+        }
+
+        private async UniTask Inject(CancellationToken token) {
+            await UniTask.WaitUntil(() => MasterDataManager.Instance, cancellationToken: token);
             _playerInjector.Initialize();
         }
     }
