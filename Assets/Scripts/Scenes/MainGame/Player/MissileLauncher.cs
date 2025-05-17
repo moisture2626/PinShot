@@ -1,5 +1,6 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using PinShot.Database;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -12,7 +13,10 @@ namespace PinShot.Scenes.MainGame.Player {
         [SerializeField] private Transform _missileSpawnPoint;
 
         ObjectPool<Missile> _missilePool;
-        public void Initialize() {
+        private MissileSettings _missileSettings;
+        public void Initialize(MissileSettings missileSettings) {
+            _missileSettings = missileSettings;
+
             _missilePool = new ObjectPool<Missile>(
                 CreateMissile,
                 OnGetMissile,
@@ -24,13 +28,22 @@ namespace PinShot.Scenes.MainGame.Player {
             FireAsync(destroyCancellationToken).Forget();
         }
 
+        /// <summary>
+        /// 発射から爆発まで
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         private async UniTask FireAsync(CancellationToken token) {
             var missile = _missilePool.Get();
-            await missile.FireFlow(Vector2.up, 10, token);
+
+            await missile.FireFlow(Vector2.up, token);
+            token.ThrowIfCancellationRequested();
             // ミサイルの発射後、プールに戻す
             _missilePool.Release(missile);
+
         }
 
+        #region Pool
         private Missile CreateMissile() {
             return Instantiate(_missilePrefab, _missileSpawnPoint.position, Quaternion.identity);
         }
@@ -38,7 +51,7 @@ namespace PinShot.Scenes.MainGame.Player {
         private void OnGetMissile(Missile missile) {
             missile.gameObject.SetActive(true);
             missile.transform.position = _missileSpawnPoint.position;
-            missile.Initialize();
+            missile.Initialize(_missileSettings);
         }
         private void OnReleaseMissile(Missile missile) {
             missile.gameObject.SetActive(false);
@@ -46,5 +59,6 @@ namespace PinShot.Scenes.MainGame.Player {
         private void OnDestroyMissile(Missile missile) {
             Destroy(missile.gameObject);
         }
+        #endregion
     }
 }

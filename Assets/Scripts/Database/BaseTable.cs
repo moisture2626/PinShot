@@ -41,10 +41,9 @@ namespace PinShot.Database {
     /// レコードが一つの場合
     /// </summary>
     /// <typeparam name="TRecord"></typeparam>
-    public abstract class BaseSingleTable<TRecord> : Table where TRecord : class {
-        [SerializeField] private TRecord _data;
+    public abstract class BaseSingleTable<TRecord> : Table where TRecord : BaseSingleTable<TRecord> {
         public TRecord GetItem() {
-            return _data;
+            return (TRecord)this;
         }
     }
 
