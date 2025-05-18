@@ -4,6 +4,7 @@ using PinShot.Database;
 using PinShot.Event;
 using PinShot.Scenes.MainGame.Ball;
 using PinShot.Scenes.MainGame.Player;
+using PinShot.Singletons;
 using PinShot.UI;
 using UnityEngine;
 
@@ -28,7 +29,8 @@ namespace PinShot.Scenes.MainGame {
 
             await UniTask.WhenAll(
                 UniTask.WaitUntil(() => MasterDataManager.Instance, cancellationToken: token),
-                UniTask.WaitUntil(() => WindowManager.Instance, cancellationToken: token)
+                UniTask.WaitUntil(() => WindowManager.Instance, cancellationToken: token),
+                UniTask.WaitUntil(() => SoundManager.Instance, cancellationToken: token)
             );
 
             // イベント系
