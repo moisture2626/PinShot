@@ -1,4 +1,5 @@
 using PinShot.Database;
+using PinShot.UI;
 using UnityEngine;
 
 namespace PinShot.Scenes.MainGame.Ball {
@@ -8,10 +9,11 @@ namespace PinShot.Scenes.MainGame.Ball {
     public class BallManagerInjector : MonoBehaviour {
         [SerializeField] private BallManager _ballManager;
 
-        public void Initialize() {
+
+        public void Initialize(GameUI gameUI) {
             var ballSettings = MasterDataManager.GetTable<BallSettings>();
             var launcherSettings = MasterDataManager.GetTable<BallManagerSettings>();
-            _ballManager.Initialize(launcherSettings, ballSettings);
+            _ballManager.Initialize(launcherSettings, ballSettings, gameUI);
         }
     }
 }

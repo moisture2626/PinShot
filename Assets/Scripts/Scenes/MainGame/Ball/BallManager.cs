@@ -2,6 +2,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using PinShot.Database;
 using PinShot.Event;
+using PinShot.UI;
 using R3;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -27,11 +28,13 @@ namespace PinShot.Scenes.MainGame.Ball {
 
         private Health _health;
         private int _combo = 0;
+        private GameUI _gameUI;
 
-        public void Initialize(BallManagerSettings launcherSettings, BallSettings ballSettings) {
+        public void Initialize(BallManagerSettings launcherSettings, BallSettings ballSettings, GameUI gameUI) {
             _ballSettings = ballSettings;
             _launcherSettings = launcherSettings;
             _trigger.Initialize(launcherSettings);
+            _gameUI = gameUI;
             _ballPool = new ObjectPool<BallObject>(
                 CreateBall,
                 OnGetBall,
@@ -45,7 +48,7 @@ namespace PinShot.Scenes.MainGame.Ball {
             _health.Current
                 .Where(_ => _isRunning)
                 .Subscribe(h => {
-                    Debug.Log($"Miss! Remain: {h}");
+                    _gameUI.SetLife((int)h);
                     if (h <= 0) {
                         // ゲームオーバー
                         EventManager<GameStateEvent>.TriggerEvent(new GameStateEvent(GameState.GameOver));
@@ -55,15 +58,13 @@ namespace PinShot.Scenes.MainGame.Ball {
             // イベントの購読
             EventManager<GameStateEvent>.Subscribe(this, ev => {
                 if (ev.State == GameState.Standby) {
-                    Debug.Log("Standby");
+                    _gameUI.SetLife(launcherSettings.GameOverCount);
                     _health.Initialize(launcherSettings.GameOverCount);
                 }
                 if (ev.State == GameState.Play && !_isRunning) {
-                    Debug.Log("Play");
                     BeginLaunch();
                 }
                 if (ev.State == GameState.GameOver) {
-                    Debug.Log("GameOver");
                     Stop();
                 }
             });
@@ -100,6 +101,8 @@ namespace PinShot.Scenes.MainGame.Ball {
                 elapsedTime += Time.deltaTime;
 
                 var remain = interval - elapsedTime;
+                // ゲージ表示
+                _gameUI.SetNextGauge(remain / interval);
 
                 _timerSubject.OnNext(remain);
                 if (remain <= 0) {
@@ -154,6 +157,7 @@ namespace PinShot.Scenes.MainGame.Ball {
             token.ThrowIfCancellationRequested();
             // ミスカウントとコンボリセット
             _combo = 0;
+            _gameUI.SetCombo(_combo);
             _health.TakeDamage(1);
         }
 
@@ -168,7 +172,9 @@ namespace PinShot.Scenes.MainGame.Ball {
             token.ThrowIfCancellationRequested();
             // 破壊したらスコアとコンボ加算
             EventManager<ScoreEvent>.TriggerEvent(new ScoreEvent(_ballSettings.Score, _combo));
+
             _combo++;
+            _gameUI.SetCombo(_combo);
         }
 
         /// <summary>
