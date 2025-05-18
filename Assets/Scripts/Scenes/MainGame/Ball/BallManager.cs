@@ -2,6 +2,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using PinShot.Database;
 using PinShot.Event;
+using PinShot.Scenes.MainGame.Item;
 using PinShot.UI;
 using R3;
 using UnityEngine;
@@ -172,9 +173,14 @@ namespace PinShot.Scenes.MainGame.Ball {
             token.ThrowIfCancellationRequested();
             // 破壊したらスコアとコンボ加算
             EventManager<ScoreEvent>.TriggerEvent(new ScoreEvent(_ballSettings.Score, _combo));
-
             _combo++;
             _gameUI.SetCombo(_combo);
+
+            // アイテムドロップ
+            bool drop = Random.Range(0f, 1f) < _ballSettings.ItemDropRate;
+            if (drop) {
+                ItemManager.DropItem(ball.transform.position);
+            }
         }
 
         /// <summary>

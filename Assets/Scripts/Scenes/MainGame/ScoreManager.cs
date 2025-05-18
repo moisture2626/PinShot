@@ -1,6 +1,8 @@
 using System;
 using PinShot.Event;
+using PinShot.Singletons;
 using R3;
+using UnityEngine;
 
 namespace PinShot.Scenes.MainGame {
     public class ScoreManager : IDisposable {
@@ -14,6 +16,8 @@ namespace PinShot.Scenes.MainGame {
 
 
         public void Initialize() {
+            _highScore = SaveDataManager.Instance.Load<ScoreData>("HighScore").HighScore;
+            Debug.Log($"HighScore: {_highScore}");
             // スコア計算
             _scoreEventSubscription = EventManager<ScoreEvent>.Subscribe(
                 null,
@@ -24,6 +28,14 @@ namespace PinShot.Scenes.MainGame {
                     }
                 }
             );
+        }
+
+        public void Save() {
+            // スコアを保存
+            var scoreData = new ScoreData {
+                HighScore = _highScore
+            };
+            SaveDataManager.Instance.Save("HighScore", scoreData);
         }
 
         /// <summary>
@@ -39,5 +51,9 @@ namespace PinShot.Scenes.MainGame {
             _score?.Dispose();
         }
 
+        [Serializable]
+        private class ScoreData {
+            public int HighScore;
+        }
     }
 }

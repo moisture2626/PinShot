@@ -21,6 +21,7 @@ namespace PinShot.UI {
         public Observable<Unit> OnTitleButtonClicked => _titleButton.OnClickAsObservable();
 
         [SerializeField] private TMP_Text _scoreText;
+        [SerializeField] private GameObject _highScoreText;
 
         /// <summary>
         /// 開いてから閉じるまで待機
@@ -38,6 +39,7 @@ namespace PinShot.UI {
         void Awake() {
             _retryButton.gameObject.SetActive(false);
             _titleButton.gameObject.SetActive(false);
+            _highScoreText.SetActive(false);
         }
 
         /// <summary>
@@ -46,7 +48,7 @@ namespace PinShot.UI {
         /// <param name="score"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async UniTask ShowScore(int score, CancellationToken token) {
+        public async UniTask ShowScore(int score, bool isHighScore, CancellationToken token) {
             _scoreText.text = $"SCORE: {0:D8}";
             await UniTask.Delay(500, cancellationToken: token);
             int value = 0;
@@ -61,6 +63,8 @@ namespace PinShot.UI {
             )
             .SetEase(Ease.Linear)
             .WithCancellation(token);
+
+            _highScoreText.SetActive(isHighScore);
         }
 
         /// <summary>

@@ -8,6 +8,7 @@ namespace PinShot.Database {
     public class MissileSettings : BaseSingleTable<MissileSettings> {
         [SerializeField] private float _speed = 10f;
         [SerializeField] private float _damage = 1f;
+        [SerializeField] private float _maxDamage = 3f;
         [SerializeField] private float _explosionLifeTime = 0.3f;
         [SerializeField] private float _explosionEffectLifetime = 1f;
         [SerializeField] private float _explosionForce = 5f;
@@ -16,6 +17,7 @@ namespace PinShot.Database {
         public float ExplosionLifeTime => _explosionLifeTime;
         public float ExplosionEffectLifetime => _explosionEffectLifetime;
         public float ExplosionForce => _explosionForce;
+        public float MaxDamage => _maxDamage;
     }
 
 

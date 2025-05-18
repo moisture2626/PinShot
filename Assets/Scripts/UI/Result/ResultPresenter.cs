@@ -43,8 +43,8 @@ namespace PinShot.UI {
         /// <returns></returns>
         private async UniTask ShowResult(CancellationToken token) {
             int score = _scoreManager.Score;
-
-            await _view.ShowScore(score, token);
+            bool isHighScore = _scoreManager.HighScore <= score;
+            await _view.ShowScore(score, isHighScore, token);
             await UniTask.Delay(500, cancellationToken: token);
             _view.ShowButtons();
         }

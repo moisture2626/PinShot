@@ -9,12 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fbd8b3c80038ea408ca8c5a6188f969, type: 3}
-  m_Name: BallSettings
+  m_Script: {fileID: 11500000, guid: e7e699b2d4fa0a247b3d23409bbfc1a8, type: 3}
+  m_Name: ItemSettings
   m_EditorClassIdentifier: 
-  _gravityScale: 0.6
-  _mass: 0.2
-  _health: 3
-  _score: 10
-  _linearDumping: 0.3
-  itemDropRate: 0.2
+  _moveSpeed: 1
+  _addPower: 1
+  _addSpeed: 0.1
