@@ -4,6 +4,7 @@ using PinShot.Database;
 using PinShot.Event;
 using PinShot.Scenes.MainGame.Ball;
 using PinShot.Scenes.MainGame.Player;
+using PinShot.UI;
 using UnityEngine;
 
 namespace PinShot.Scenes.MainGame {
@@ -24,7 +25,10 @@ namespace PinShot.Scenes.MainGame {
             _uiCanvas.renderMode = RenderMode.ScreenSpaceCamera;
             _uiCanvas.worldCamera = Camera.main;
 
-            await UniTask.WaitUntil(() => MasterDataManager.Instance, cancellationToken: token);
+            await UniTask.WhenAll(
+                UniTask.WaitUntil(() => MasterDataManager.Instance, cancellationToken: token),
+                UniTask.WaitUntil(() => WindowManager.Instance, cancellationToken: token)
+            );
             _ = new EventManager<GameStateEvent>();
 
             _playerInjector.Initialize();

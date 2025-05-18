@@ -1,4 +1,5 @@
 using PinShot.Database;
+using PinShot.Event;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,6 +18,7 @@ namespace PinShot.Scenes.MainGame.Player {
         [SerializeField] private InputAction _moveAction;
         [SerializeField] private InputAction _shotAction;
         private bool _initialized = false;
+        private bool _inputEnabled = false;
         public void Initialize(PlayerControlSettings playerControlSettings, PlayerView playerView, MissileLauncher missileLauncher) {
             _playerControlSettings = playerControlSettings;
             _playerView = playerView;
@@ -32,7 +34,11 @@ namespace PinShot.Scenes.MainGame.Player {
             _playerShooting = new PlayerShooting();
             _playerShooting.Initialize(_playerControlSettings, _missileLauncher);
 
-
+            EventManager<GameStateEvent>.Subscribe(
+                this,
+                ev => {
+                    _inputEnabled = ev.State == GameState.Play;
+                });
             _initialized = true;
         }
 
@@ -40,7 +46,7 @@ namespace PinShot.Scenes.MainGame.Player {
 
         private void Update() {
 
-            if (_initialized) {
+            if (_initialized && _inputEnabled) {
                 // マウス位置を常に監視
                 Vector2 currentMousePosition = _moveAction.ReadValue<Vector2>();
                 _playerMovement.Move(currentMousePosition);
@@ -53,7 +59,7 @@ namespace PinShot.Scenes.MainGame.Player {
         /// </summary>
         /// <param name="context"></param>
         private void OnShotActionPerformed(InputAction.CallbackContext context) {
-            if (!_initialized) return;
+            if (!_initialized || !_inputEnabled) return;
             _playerShooting.Fire();
         }
 
