@@ -17,3 +17,11 @@ MonoBehaviour:
     _seClip: {fileID: 8300000, guid: 5d88ba3ccf7dd1a42b926a8461ecbd31, type: 3}
     _volume: 1
     _isPoolable: 1
+  - _key: Shot
+    _seClip: {fileID: 8300000, guid: 57e8330977a12764ead62caf090e6b71, type: 3}
+    _volume: 1
+    _isPoolable: 1
+  - _key: Explosion
+    _seClip: {fileID: 8300000, guid: 455477a3716226e4c8e57578c335422d, type: 3}
+    _volume: 1
+    _isPoolable: 1
