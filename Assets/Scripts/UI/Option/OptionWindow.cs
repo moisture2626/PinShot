@@ -19,7 +19,14 @@ namespace PinShot.UI {
 
         public static async UniTask OpenAsync(CancellationToken token) {
             var window = WindowManager.Open<OptionWindow>();
+            var presenter = new OptionPresenter();
+            await presenter.Initialize(window, token);
             await window.OnDestroyAsync().AttachExternalCancellation(token);
+        }
+
+        public void SliderInitialize(float bgmVolume, float seVolume) {
+            _bgmVolumeSlider.value = bgmVolume;
+            _seVolumeSlider.value = seVolume;
         }
     }
 }

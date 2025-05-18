@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1799770766005248793}
   m_Layer: 5
-  m_Name: BGMSlider (1)
+  m_Name: SESlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1035,6 +1035,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 482331498633387047}
+  - component: {fileID: 7649851762331985727}
   m_Layer: 5
   m_Name: OptionWindow
   m_TagString: Untagged
@@ -1066,6 +1067,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &7649851762331985727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6933849458194948409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e71d4fc6331acc44abcf19d362771cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bgmVolumeSlider: {fileID: 4502518776058821907}
+  _seVolumeSlider: {fileID: 3864479669081948978}
+  _closeButton: {fileID: 9001610086842079126}
+  _licenseButton: {fileID: 6390602333423140071}
 --- !u!1 &7417868707121469049
 GameObject:
   m_ObjectHideFlags: 0
@@ -1675,6 +1692,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7540935943750382487, guid: 156984bfd0fa7714a9ac7ea710b48874, type: 3}
   m_PrefabInstance: {fileID: 6557697700356780198}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9001610086842079126 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2877162436671235888, guid: 156984bfd0fa7714a9ac7ea710b48874, type: 3}
+  m_PrefabInstance: {fileID: 6557697700356780198}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &9169963296690084823
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1769,7 +1797,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7681810554841604124, guid: 156984bfd0fa7714a9ac7ea710b48874, type: 3}
       propertyPath: m_Name
-      value: Button
+      value: ButtonLicense
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1781,3 +1809,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7540935943750382487, guid: 156984bfd0fa7714a9ac7ea710b48874, type: 3}
   m_PrefabInstance: {fileID: 9169963296690084823}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6390602333423140071 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2877162436671235888, guid: 156984bfd0fa7714a9ac7ea710b48874, type: 3}
+  m_PrefabInstance: {fileID: 9169963296690084823}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

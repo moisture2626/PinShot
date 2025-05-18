@@ -9,6 +9,7 @@ namespace PinShot.Scenes.Title {
     /// </summary>
     public class TitleInjector : MonoBehaviour {
         [SerializeField] private TitleView _view;
+        private TitlePresenter _presenter;
         void Awake() {
             Inject(destroyCancellationToken).Forget();
         }
@@ -22,6 +23,13 @@ namespace PinShot.Scenes.Title {
                 UniTask.WaitUntil(() => WindowManager.Instance, cancellationToken: token),
                 UniTask.WaitUntil(() => SoundManager.Instance, cancellationToken: token)
             );
+
+            _presenter = new TitlePresenter();
+            _presenter.Initialize(_view);
+        }
+
+        void OnDestroy() {
+
         }
     }
 }

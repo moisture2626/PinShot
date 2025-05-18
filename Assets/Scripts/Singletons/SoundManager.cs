@@ -14,11 +14,13 @@ namespace PinShot.Singletons {
         [SerializeField] private BGMTable _bgmTable;
         [Range(0f, 1f)]
         [SerializeField] private float _bgmMasterVolume = 1f;
+        public float BGMVolume => _bgmMasterVolume;
 
         [Header("SE設定")]
         [SerializeField] private SETable _seTable;
         [Range(0f, 1f)]
         [SerializeField] private float _seMasterVolume = 1f;
+        public float SEVolume => _seMasterVolume;
         [SerializeField] private int _seAudioSourcePoolSize = 10;
 
         // コンポーネント
@@ -33,6 +35,9 @@ namespace PinShot.Singletons {
         // AudioSourceをキャッシュするためのディクショナリ
         private readonly Dictionary<string, AudioClip> _seClipCache = new();
 
+        public bool IsLoaded { get; private set; } = false;
+        private const string _saveDataKey = "AudioVolume";
+
         protected override void Initialize() {
             InitializeAudioSources();
 
@@ -42,7 +47,7 @@ namespace PinShot.Singletons {
             if (_seTable != null)
                 _seTable.Initialize();
 
-            base.Initialize();
+            GetSaveData(destroyCancellationToken).Forget();
         }
 
         private void InitializeAudioSources() {
@@ -59,6 +64,22 @@ namespace PinShot.Singletons {
                 _seSourcePool.Add(seSource);
                 _availableSESourceQueue.Enqueue(seSource);
             }
+        }
+        /// <summary>
+        /// セーブデータの読み込み
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        private async UniTask GetSaveData(CancellationToken token) {
+            await UniTask.WaitUntil(() => SaveDataManager.Instance != null, cancellationToken: token);
+            // セーブデータから音量を取得
+            var saveData = SaveDataManager.Instance.Load<AudioVolume>(_saveDataKey);
+            if (saveData != null) {
+                _bgmMasterVolume = saveData.BGMVolume;
+                _seMasterVolume = saveData.SEVolume;
+            }
+            Debug.Log($"BGMVolume: {_bgmMasterVolume}, SEVolume: {_seMasterVolume}");
+            IsLoaded = true;
         }
 
         #region BGM操作
@@ -370,10 +391,26 @@ namespace PinShot.Singletons {
             _fadeCancellation = null;
         }
 
+        public void SaveVolumeSettings() {
+            var volumeData = new AudioVolume {
+                BGMVolume = _bgmMasterVolume,
+                SEVolume = _seMasterVolume
+            };
+            SaveDataManager.Instance.Save(_saveDataKey, volumeData);
+        }
+
         protected override void OnDestroy() {
             StopAllSounds();
             ClearSECache();
             base.OnDestroy();
         }
+
+        [Serializable]
+        private class AudioVolume {
+            public float BGMVolume = 0.5f;
+            public float SEVolume = 0.5f;
+        }
+
+
     }
 }
