@@ -40,6 +40,7 @@ namespace PinShot.Scenes.MainGame {
             while (!token.IsCancellationRequested) {
                 // UIリセット
                 _gameUI.Initialize();
+                _gameUI.SetHighScore(_scoreManager.HighScore);
                 // スコアリセット
                 _scoreManager.Reset();
                 _scoreManager.OnChangeScore.Subscribe(s => {
@@ -63,7 +64,8 @@ namespace PinShot.Scenes.MainGame {
                 await ScreenFade.Instance.FadeOutAsync(0.5f, Color.black, token);
                 Time.timeScale = 1;
                 EventManager<GameStateEvent>.TriggerEvent(GameStateEvent.Create(GameState.Result));
-
+                // スコアを保存
+                _scoreManager.Save();
                 // リザルト表示
                 ResultWindow.OpenAsync(_scoreManager, token).Forget();
                 ScreenFade.Instance.FadeInAsync(0.2f, Color.black, token).Forget();

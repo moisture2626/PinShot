@@ -9,6 +9,7 @@ namespace PinShot.UI {
     public class GameUI : MonoBehaviour {
         [SerializeField] private GameObject[] _life;
         [SerializeField] private TMP_Text _score;
+        [SerializeField] private TMP_Text _highScore;
         [SerializeField] private TMP_Text _combo;
         [SerializeField] private Image _nextGauge;
 
@@ -24,6 +25,9 @@ namespace PinShot.UI {
         }
         public void SetScore(int score) {
             _score.text = score.ToString();
+        }
+        public void SetHighScore(int highScore) {
+            _highScore.text = highScore.ToString();
         }
         public void SetCombo(int combo) {
             _combo.text = combo.ToString();
