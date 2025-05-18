@@ -164,7 +164,7 @@ namespace PinShot.Singletons {
         /// <param name="key">保存するキー</param>
         /// <param name="data">保存するデータのインスタンス</param>
         /// <typeparam name="T"></typeparam>
-        public void Save<T>(string key, T data) {
+        public void Save<T>(string key, T data) where T : class {
             try {
                 string json = JsonUtility.ToJson(data);
                 if (_useEncryption) {
@@ -185,11 +185,11 @@ namespace PinShot.Singletons {
         /// <param name="key">読み込むデータのキー</param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T Load<T>(string key) {
+        public T Load<T>(string key) where T : class, new() {
             try {
                 if (!PlayerPrefs.HasKey(key)) {
                     Debug.Log($"データが見つかりません: {key}");
-                    return default;
+                    return new T();
                 }
 
                 string json = PlayerPrefs.GetString(key);
@@ -202,7 +202,7 @@ namespace PinShot.Singletons {
             }
             catch (Exception e) {
                 Debug.LogError($"ロードに失敗しました。Key: {key}, Error: {e.Message}");
-                return default;
+                return new T();
             }
         }
 

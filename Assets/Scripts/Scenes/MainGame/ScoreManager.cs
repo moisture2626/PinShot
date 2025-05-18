@@ -53,7 +53,7 @@ namespace PinShot.Scenes.MainGame {
 
         [Serializable]
         private class ScoreData {
-            public int HighScore;
+            public int HighScore = 0;
         }
     }
 }
