@@ -2,6 +2,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using PinShot.Const;
 using PinShot.Event;
+using PinShot.Scenes.MainGame;
 using PinShot.Singletons;
 using R3;
 
@@ -11,9 +12,11 @@ namespace PinShot.UI {
     /// </summary>
     public class ResultPresenter {
         private ResultWindow _view;
+        private ScoreManager _scoreManager;
 
-        public void Initialize(ResultWindow view) {
+        public void Initialize(ResultWindow view, ScoreManager scoreManager) {
             _view = view;
+            _scoreManager = scoreManager;
             Subscribe();
             // 結果表示
             ShowResult(_view.destroyCancellationToken).Forget();
@@ -38,7 +41,7 @@ namespace PinShot.UI {
         /// <param name="token"></param>
         /// <returns></returns>
         private async UniTask ShowResult(CancellationToken token) {
-            int score = 100; // ここは実際のスコアを取得する処理に置き換える
+            int score = _scoreManager.Score;
 
             await _view.ShowScore(score, token);
             await UniTask.Delay(500, cancellationToken: token);

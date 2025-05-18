@@ -26,6 +26,7 @@ namespace PinShot.Scenes.MainGame.Ball {
         private int _launchCount = 0;
 
         private Health _health;
+        private int _combo = 0;
 
         public void Initialize(BallManagerSettings launcherSettings, BallSettings ballSettings) {
             _ballSettings = ballSettings;
@@ -35,7 +36,8 @@ namespace PinShot.Scenes.MainGame.Ball {
                 CreateBall,
                 OnGetBall,
                 OnReleaseBall,
-                OnDestroyBall
+                OnDestroyBall,
+                defaultCapacity: 20
             );
 
             // ゲームオーバーの処理をHealthでやる
@@ -129,21 +131,16 @@ namespace PinShot.Scenes.MainGame.Ball {
             var ball = _ballPool.Get();
             _launchCount++;
             // 耐久力がなくなるか、デッドラインを越えるまで待機
+            using var internalCancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
             await UniTask.WhenAny(
-                WaitForOverDeadLine(ball, token),
-                UniTask.WaitWhile(() => ball.Health.Current.Value > 0, cancellationToken: token)
+                WaitForOverDeadLine(ball, internalCancellation.Token),
+                WaitForBallDead(ball, internalCancellation.Token)
             );
             // プールに戻す
             _ballPool.Release(ball);
 
-            // アクティブなボールが無くなったら再度発射
-            if (_ballPool.CountActive <= 0) {
-                _health.TakeDamage(1);
-                if (_health.Current.Value > 0) {
-                    // 再度発射
-                    BeginLaunch();
-                }
-            }
+            // WhenAnyの処理を全部終わらせる
+            internalCancellation.Cancel();
         }
 
         /// <summary>
@@ -154,12 +151,35 @@ namespace PinShot.Scenes.MainGame.Ball {
         /// <returns></returns>
         private async UniTask WaitForOverDeadLine(BallObject ball, CancellationToken token) {
             await UniTask.WaitUntil(() => ball.transform.position.y < _deadLine.position.y, cancellationToken: token);
+            token.ThrowIfCancellationRequested();
+            // ミスカウントとコンボリセット
+            _combo = 0;
+            _health.TakeDamage(1);
         }
 
+        /// <summary>
+        /// ボールの耐久力がなくなるまで待機
+        /// </summary>
+        /// <param name="ball"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        private async UniTask WaitForBallDead(BallObject ball, CancellationToken token) {
+            await UniTask.WaitUntil(() => ball.Health.Current.Value <= 0, cancellationToken: token);
+            token.ThrowIfCancellationRequested();
+            // 破壊したらスコアとコンボ加算
+            EventManager<ScoreEvent>.TriggerEvent(new ScoreEvent(_ballSettings.Score, _combo));
+            _combo++;
+        }
+
+        /// <summary>
+        /// 停止
+        /// </summary>
         private void Stop() {
             _isRunning = false;
+            _combo = 0;
             _timerCancellation?.Dispose();
             _timerCancellation = null;
+            _ballPool.Clear();
         }
 
         void OnDestroy() {

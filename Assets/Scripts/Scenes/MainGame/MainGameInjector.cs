@@ -29,14 +29,23 @@ namespace PinShot.Scenes.MainGame {
                 UniTask.WaitUntil(() => MasterDataManager.Instance, cancellationToken: token),
                 UniTask.WaitUntil(() => WindowManager.Instance, cancellationToken: token)
             );
-            _ = new EventManager<GameStateEvent>();
 
+            // イベント系
+            _ = new EventManager<GameStateEvent>();
+            _ = new EventManager<ScoreEvent>();
+
+            // ゲーム内オブジェクトの初期化
             _playerInjector.Initialize();
             _ballManagerInjector.Initialize();
             _mainGameManager.Initialize();
 
             // 初期化終了後、ゲーム開始
             _mainGameManager.BeginGame();
+        }
+
+        void OnDestroy() {
+            EventManager<GameStateEvent>.DisposeAll();
+            EventManager<ScoreEvent>.DisposeAll();
         }
     }
 }

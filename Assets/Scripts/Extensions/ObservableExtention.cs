@@ -34,7 +34,8 @@ namespace PinShot.Extensions {
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static IDisposable SubscribeAwait<T>(this Observable<T> source, MonoBehaviour addToComponent, Entity<bool> entity, Func<T, CancellationToken, ValueTask> onNext) {
-            return source.SubscribeAwait(async (ev, t) => {
+
+            var subscription = source.SubscribeAwait(async (ev, t) => {
                 if (entity.Value) {
                     return;
                 }
@@ -52,7 +53,12 @@ namespace PinShot.Extensions {
                 finally {
                     entity.Value = false;
                 }
-            }).RegisterTo(addToComponent.destroyCancellationToken);
+            });
+
+            if (addToComponent != null) {
+                subscription.RegisterTo(addToComponent.destroyCancellationToken);
+            }
+            return subscription;
         }
     }
 }
