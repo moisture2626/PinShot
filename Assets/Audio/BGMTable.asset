@@ -15,7 +15,7 @@ MonoBehaviour:
   _dataList:
   - _key: Title
     _bgmClip: {fileID: 8300000, guid: 7194bdb497f5bb44d9b69b25d8141da9, type: 3}
-    _volume: 1
+    _volume: 0.7
   - _key: Game
     _bgmClip: {fileID: 8300000, guid: 81816c1db34986c42bef6dbb03a4ca68, type: 3}
-    _volume: 1
+    _volume: 0.7

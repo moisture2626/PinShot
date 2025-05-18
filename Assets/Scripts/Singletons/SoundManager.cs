@@ -12,14 +12,12 @@ namespace PinShot.Singletons {
         // 設定関連
         [Header("BGM設定")]
         [SerializeField] private BGMTable _bgmTable;
-        [Range(0f, 1f)]
-        [SerializeField] private float _bgmMasterVolume = 1f;
+        private float _bgmMasterVolume = 0.5f;
         public float BGMVolume => _bgmMasterVolume;
 
         [Header("SE設定")]
         [SerializeField] private SETable _seTable;
-        [Range(0f, 1f)]
-        [SerializeField] private float _seMasterVolume = 1f;
+        private float _seMasterVolume = 0.5f;
         public float SEVolume => _seMasterVolume;
         [SerializeField] private int _seAudioSourcePoolSize = 10;
 
@@ -78,7 +76,11 @@ namespace PinShot.Singletons {
                 _bgmMasterVolume = saveData.BGMVolume;
                 _seMasterVolume = saveData.SEVolume;
             }
-            Debug.Log($"BGMVolume: {_bgmMasterVolume}, SEVolume: {_seMasterVolume}");
+            else {
+                // セーブデータがない場合はデフォルト値を使用
+                _bgmMasterVolume = 0.5f;
+                _seMasterVolume = 0.5f;
+            }
             IsLoaded = true;
         }
 
