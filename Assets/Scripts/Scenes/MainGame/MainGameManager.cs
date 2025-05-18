@@ -24,6 +24,9 @@ namespace PinShot.Scenes.MainGame {
         /// ゲーム開始
         /// </summary>
         public void BeginGame() {
+            // BGM再生開始
+            SoundManager.Instance.PlayBGM("Game", 0.2f);
+
             EventManager<GameStateEvent>.TriggerEvent(GameStateEvent.Create(GameState.Standby));
             GameFlow(_gameFlowCancellation.Token).Forget();
         }

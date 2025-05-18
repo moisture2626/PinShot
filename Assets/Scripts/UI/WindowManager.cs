@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using PinShot.Singletons;
 using UnityEngine;
 
-namespace PinShot.UI {
+namespace PinShot.Singletons {
     public class WindowManager : BaseSingleton<WindowManager> {
         private Dictionary<string, BaseWindow> _windows = new();
 

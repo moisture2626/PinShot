@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PinShot.Singletons;
+using PinShot.Database;
 using UnityEngine;
 
-namespace PinShot.Database {
+namespace PinShot.Singletons {
     /// <summary>
     /// マスターデータを持っておくクラス
     /// </summary> 

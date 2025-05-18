@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Triggers;
 using DG.Tweening;
 using PinShot.Scenes.MainGame;
+using PinShot.Singletons;
 using R3;
 using TMPro;
 using UnityEngine;

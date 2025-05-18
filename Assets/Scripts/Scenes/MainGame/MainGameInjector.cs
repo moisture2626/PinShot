@@ -4,6 +4,7 @@ using PinShot.Database;
 using PinShot.Event;
 using PinShot.Scenes.MainGame.Ball;
 using PinShot.Scenes.MainGame.Player;
+using PinShot.Singletons;
 using PinShot.UI;
 using UnityEngine;
 
@@ -25,10 +26,13 @@ namespace PinShot.Scenes.MainGame {
         private async UniTask Inject(CancellationToken token) {
             _uiCanvas.renderMode = RenderMode.ScreenSpaceCamera;
             _uiCanvas.worldCamera = Camera.main;
-
+            // まずSaveDataManagerを待機
+            await UniTask.WaitUntil(() => SaveDataManager.Instance, cancellationToken: token);
+            // その後、Singletonを待機
             await UniTask.WhenAll(
                 UniTask.WaitUntil(() => MasterDataManager.Instance, cancellationToken: token),
-                UniTask.WaitUntil(() => WindowManager.Instance, cancellationToken: token)
+                UniTask.WaitUntil(() => WindowManager.Instance, cancellationToken: token),
+                UniTask.WaitUntil(() => SoundManager.Instance, cancellationToken: token)
             );
 
             // イベント系

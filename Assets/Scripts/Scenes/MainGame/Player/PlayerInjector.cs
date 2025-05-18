@@ -1,4 +1,5 @@
 using PinShot.Database;
+using PinShot.Singletons;
 using UnityEngine;
 
 namespace PinShot.Scenes.MainGame.Player {
