@@ -1,6 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Triggers;
+using PinShot.Singletons;
 using PinShot.UI;
 using TMPro;
 using UnityEngine;

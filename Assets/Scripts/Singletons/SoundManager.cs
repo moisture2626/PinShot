@@ -122,11 +122,10 @@ namespace PinShot.Singletons {
 
             // フェードイン
             float targetVolume = nextBgm.Volume * _bgmMasterVolume;
-            Debug.Log($"BGMの音量: {targetVolume}");
-            // await _bgmSource.DOFade(targetVolume, fadeTime / 2)
-            //     .SetEase(Ease.InQuad)
-            //     .SetUpdate(true)  // タイムスケール影響なし
-            //     .ToUniTask(cancellationToken: token);
+            await _bgmSource.DOFade(targetVolume, fadeTime / 2)
+                .SetEase(Ease.InQuad)
+                .SetUpdate(true)  // タイムスケール影響なし
+                .ToUniTask(cancellationToken: token);
 
             _bgmSource.volume = targetVolume;
         }
