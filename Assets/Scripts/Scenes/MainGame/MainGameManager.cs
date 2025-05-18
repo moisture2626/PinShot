@@ -42,7 +42,7 @@ namespace PinShot.Scenes.MainGame {
                 _scoreManager.OnChangeScore.Subscribe(s => {
                     // スコアUIの更新
                     _gameUI.SetScore(s);
-                }).AddTo(destroyCancellationToken);
+                }).AddTo(token);
 
                 // 開始前のカウントダウンを待機
                 await StandbyWindow.OpenAsync(token);

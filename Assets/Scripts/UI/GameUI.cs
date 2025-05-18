@@ -13,7 +13,6 @@ namespace PinShot.UI {
         [SerializeField] private Image _nextGauge;
 
         public void Initialize() {
-            SetLife(0);
             SetScore(0);
             SetCombo(0);
             SetNextGauge(1);
