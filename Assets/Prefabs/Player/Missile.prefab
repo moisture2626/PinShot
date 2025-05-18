@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: b39bedbddcec5d34886290cb623ea2b6, type: 3}
-  m_Color: {r: 0.754717, g: 0.29305357, b: 0.18155926, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -137,6 +137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _missileView: {fileID: 4924435816056222382}
   _explosionView: {fileID: 2011798197456607857}
+  _effectColor: {r: 0.9339623, g: 0.45029464, b: 0.3304112, a: 1}
 --- !u!70 &189100651664120156
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
