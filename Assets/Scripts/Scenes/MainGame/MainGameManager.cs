@@ -10,8 +10,11 @@ namespace PinShot.Scenes.MainGame {
     public class MainGameManager : MonoBehaviour {
 
         private CancellationTokenSource _gameFlowCancellation;
+        private ScoreManager _scoreManager;
         public void Initialize() {
             _gameFlowCancellation = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
+            _scoreManager = new ScoreManager();
+            _scoreManager.Initialize();
         }
 
         /// <summary>
@@ -29,6 +32,9 @@ namespace PinShot.Scenes.MainGame {
         /// <returns></returns>
         private async UniTask GameFlow(CancellationToken token) {
             while (!token.IsCancellationRequested) {
+                // スコアリセット
+                _scoreManager.Reset();
+
                 // 開始前のカウントダウンを待機
                 await StandbyWindow.OpenAsync(token);
                 token.ThrowIfCancellationRequested();
@@ -47,19 +53,13 @@ namespace PinShot.Scenes.MainGame {
                 EventManager<GameStateEvent>.TriggerEvent(GameStateEvent.Create(GameState.Result));
 
                 // リザルト表示
-                ResultWindow.OpenAsync(token).Forget();
+                ResultWindow.OpenAsync(_scoreManager, token).Forget();
                 ScreenFade.Instance.FadeInAsync(0.2f, Color.black, token).Forget();
 
                 // リザルトウィンドウの操作を待機
                 await EventManager<GameStateEvent>.WaitForEvent(ev => ev.State == GameState.Standby, token);
                 token.ThrowIfCancellationRequested();
             }
-        }
-
-        void OnDestroy() {
-            // Clean up the event manager
-            EventManager<GameStateEvent>.DisposeAll();
-            Debug.Log("Main Game Manager Destroyed");
         }
     }
 }

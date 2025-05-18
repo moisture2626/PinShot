@@ -2,6 +2,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Triggers;
 using DG.Tweening;
+using PinShot.Scenes.MainGame;
 using R3;
 using TMPro;
 using UnityEngine;
@@ -25,10 +26,10 @@ namespace PinShot.UI {
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async UniTask OpenAsync(CancellationToken token) {
+        public static async UniTask OpenAsync(ScoreManager scoreManager, CancellationToken token) {
             var window = WindowManager.Open<ResultWindow>();
             var presenter = new ResultPresenter();
-            presenter.Initialize(window);
+            presenter.Initialize(window, scoreManager);
 
             await window.OnDestroyAsync().AttachExternalCancellation(token);
         }

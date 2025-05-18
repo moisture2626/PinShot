@@ -4,6 +4,7 @@ namespace PinShot.Database {
     [CreateAssetMenu(fileName = "BallManagerSettings", menuName = "Scriptable Objects/BallManagerSettings")]
     public class BallManagerSettings : BaseSingleTable<BallManagerSettings> {
         [SerializeField] private float _launchForce = 10f;
+        [SerializeField] private float _forceRandomRange = 2f;
         [SerializeField] private float _launchIntervalMax = 30f;
         [SerializeField] private float _launchIntervalMin = 1f;
 
@@ -14,6 +15,7 @@ namespace PinShot.Database {
         [SerializeField] private int _gameOverCount = 3;
 
         public float LaunchForce => _launchForce;
+        public float ForceRandomRange => _forceRandomRange;
         public float LaunchIntervalMax => _launchIntervalMax;
         public float LaunchIntervalMin => _launchIntervalMin;
         public int IntervalMaxCount => _intervalMaxCount;

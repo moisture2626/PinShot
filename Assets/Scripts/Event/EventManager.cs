@@ -55,9 +55,14 @@ namespace PinShot.Event {
         public static IDisposable Subscribe(MonoBehaviour addToComponent, Action<TEvent> onNext) {
             var instance = GetInstance();
             var subject = instance._subject;
-            return subject.Subscribe(ev => {
+
+            var subscription = subject.Subscribe(ev => {
                 onNext(ev);
-            }).RegisterTo(addToComponent.destroyCancellationToken);
+            });
+            if (addToComponent != null) {
+                subscription.RegisterTo(addToComponent.destroyCancellationToken);
+            }
+            return subscription;
         }
 
         /// <summary>

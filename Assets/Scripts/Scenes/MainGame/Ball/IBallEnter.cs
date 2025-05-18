@@ -9,6 +9,8 @@ namespace PinShot.Scenes.MainGame.Ball {
         /// <returns>押し返す力</returns>
         Vector2 OnStayBall(Vector2 hitPosition);
 
+        float OnEnterBall(Vector2 hitPosition);
+
         void OnExitBall(Vector2 hitPosition);
     }
 }

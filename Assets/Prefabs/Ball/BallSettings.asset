@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbd8b3c80038ea408ca8c5a6188f969, type: 3}
   m_Name: BallSettings
   m_EditorClassIdentifier: 
-  _gravityScale: 1
+  _gravityScale: 0.6
   _mass: 0.2
-  _health: 10
+  _health: 3
+  _score: 10
+  _linearDumping: 0.3
