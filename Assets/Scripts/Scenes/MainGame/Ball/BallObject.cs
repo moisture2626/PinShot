@@ -27,6 +27,8 @@ namespace PinShot.Scenes.MainGame.Ball {
 
         private BallSettings _settings;
 
+        private float _launchSpeedOffset;
+
         public void Initialize(BallSettings settings) {
             _settings = settings;
             _health ??= new Health();
@@ -45,6 +47,9 @@ namespace PinShot.Scenes.MainGame.Ball {
             if (collision.gameObject.GetComponent<IBallDamageDealer>() is IBallDamageDealer damageDealer) {
                 TakeDamage(damageDealer, collision.ClosestPoint(transform.position));
             }
+            if (collision.gameObject.GetComponent<IBallEnter>() is IBallEnter ballEnter) {
+                _launchSpeedOffset = ballEnter.OnEnterBall(collision.ClosestPoint(transform.position));
+            }
         }
 
         /// <summary>
@@ -54,7 +59,7 @@ namespace PinShot.Scenes.MainGame.Ball {
         private void OnTriggerStay2D(Collider2D collision) {
             if (collision.gameObject.GetComponent<IBallEnter>() is IBallEnter ballEnter) {
                 var velocity = ballEnter.OnStayBall(collision.ClosestPoint(transform.position));
-                Rigidbody2D.linearVelocity = velocity;
+                Rigidbody2D.linearVelocity = velocity + _launchSpeedOffset * Vector2.up;
             }
         }
 
