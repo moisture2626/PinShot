@@ -4,6 +4,11 @@ using PinShot.Singletons;
 using PinShot.UI;
 using R3;
 
+#if !UNITY_EDITOR
+
+using UnityEngine;
+
+#endif
 namespace PinShot.Scenes.Title {
     public class TitlePresenter {
         private TitleView _view;
