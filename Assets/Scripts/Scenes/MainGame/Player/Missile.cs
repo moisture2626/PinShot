@@ -11,6 +11,7 @@ namespace PinShot.Scenes.MainGame.Player {
         [SerializeField] private SpriteRenderer _missileView;
         public SpriteRenderer MissileView => _missileView;
         [SerializeField] private SpriteRenderer _explosionView;
+        [SerializeField] private Color _effectColor;
         public SpriteRenderer ExplosionView => _explosionView;
         private Collider2D _collider2D;
         public Collider2D Collider2D {
@@ -99,7 +100,7 @@ namespace PinShot.Scenes.MainGame.Player {
         /// <returns></returns>
         private async UniTask ExplosionFadeOutFlow(float lifeTime, CancellationToken token) {
             // 1秒にしておく
-            _explosionView.color = Color.white;
+            _explosionView.color = _effectColor;
             await _explosionView.DOFade(0, lifeTime).SetEase(Ease.Linear).WithCancellation(token);
         }
 
