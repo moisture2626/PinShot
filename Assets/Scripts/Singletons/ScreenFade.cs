@@ -28,7 +28,6 @@ namespace PinShot.Singletons {
 
             _fadeImage.gameObject.SetActive(true);
             var startColor = color;
-            startColor.a = 0;
             _fadeImage.color = startColor;
             try {
                 await _fadeImage.DOColor(color, duration).SetEase(Ease.Linear).WithCancellation(token);
@@ -53,7 +52,6 @@ namespace PinShot.Singletons {
             _fadeCancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
 
             _fadeImage.gameObject.SetActive(true);
-            _fadeImage.color = color;
             var endColor = color;
             endColor.a = 0;
             try {

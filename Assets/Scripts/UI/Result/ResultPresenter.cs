@@ -5,6 +5,7 @@ using PinShot.Event;
 using PinShot.Scenes.MainGame;
 using PinShot.Singletons;
 using R3;
+using UnityEngine;
 
 namespace PinShot.UI {
     /// <summary>
@@ -60,6 +61,11 @@ namespace PinShot.UI {
         /// タイトルに戻る
         /// </summary>
         private void Title() {
+            ReturnToTitleFlow(_view.destroyCancellationToken).Forget();
+        }
+
+        private async UniTask ReturnToTitleFlow(CancellationToken token) {
+            await ScreenFade.Instance.FadeInAsync(0.2f, Color.black, token);
             SceneChanger.Instance.ChangeScene(ConstScene.Title).Forget();
             _view.Close();
         }

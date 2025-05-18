@@ -34,6 +34,7 @@ namespace PinShot.Scenes.MainGame.Ball {
             Rigidbody2D.gravityScale = 0;
             Collider2D.isTrigger = true;
             Rigidbody2D.mass = _settings.Mass;
+            Rigidbody2D.linearDamping = _settings.LinearDumping;
         }
 
         /// <summary>
