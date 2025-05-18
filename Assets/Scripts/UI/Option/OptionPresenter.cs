@@ -41,6 +41,7 @@ namespace PinShot.UI {
             _view.LicenseButtonAsObservable
                 .Subscribe(_ => {
                     // ライセンス画面
+                    LicenseWindow.OpenAsync(_view.GetCancellationTokenOnDestroy()).Forget();
                 })
                 .AddTo(_view);
         }
