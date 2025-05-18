@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using PinShot.Extensions;
 using R3;
 using UnityEngine;
 
@@ -68,19 +69,7 @@ namespace PinShot.Event {
         public static IDisposable SubscribeAwait(MonoBehaviour addToComponent, Func<TEvent, CancellationToken, ValueTask> onNext) {
             var instance = GetInstance();
             var subject = instance._subject;
-            var entity = new Entity<bool>(false);
-            return subject.SubscribeAwait(async (ev, t) => {
-                if (entity.Value) {
-                    return;
-                }
-                entity.Value = true;
-                try {
-                    await onNext(ev, t);
-                }
-                finally {
-                    entity.Value = false;
-                }
-            }).RegisterTo(addToComponent.destroyCancellationToken);
+            return subject.SubscribeAwait(addToComponent, onNext);
         }
 
         /// <summary>
