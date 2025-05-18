@@ -14,7 +14,7 @@ public class PostBuildProcessor : IPostprocessBuildWithReport {
         string buildPath = report.summary.outputPath;
         string buildDirectory = Path.GetDirectoryName(buildPath);
 
-        // THIRD_PARTY_NOTICES.md のコピー
+        // LICENSE.md のコピー
         CopyLicenseFile(buildDirectory);
 
         Debug.Log($"ライセンスファイルをコピーしました: {buildDirectory}");
@@ -22,8 +22,8 @@ public class PostBuildProcessor : IPostprocessBuildWithReport {
 
     // ライセンスファイルをコピーする
     private void CopyLicenseFile(string buildDirectory) {
-        string sourceFilePath = Path.Combine(Application.dataPath, "..", "THIRD_PARTY_NOTICES.md");
-        string destFilePath = Path.Combine(buildDirectory, "THIRD_PARTY_NOTICES.md");
+        string sourceFilePath = Path.Combine(Application.dataPath, "..", "LICENSE.md");
+        string destFilePath = Path.Combine(buildDirectory, "LICENSE.md");
 
         if (File.Exists(sourceFilePath)) {
             File.Copy(sourceFilePath, destFilePath, true);

@@ -30,7 +30,7 @@ namespace PinShot.Scenes.Title {
             _view.DescriptionButton
                 .Subscribe(_ => {
                     // 説明画面
-                    // DescriptionWindow.OpenAsync(_view.destroyCancellationToken).Forget();
+                    DescriptionWindow.OpenAsync(_view.destroyCancellationToken).Forget();
                 })
                 .AddTo(_view);
 
