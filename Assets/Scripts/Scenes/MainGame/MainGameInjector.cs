@@ -1,8 +1,8 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using PinShot.Database;
 using PinShot.Event;
 using PinShot.Scenes.MainGame.Ball;
+using PinShot.Scenes.MainGame.Item;
 using PinShot.Scenes.MainGame.Player;
 using PinShot.Singletons;
 using PinShot.UI;
@@ -15,6 +15,7 @@ namespace PinShot.Scenes.MainGame {
     public class MainGameInjector : MonoBehaviour {
         [SerializeField] private PlayerInjector _playerInjector;
         [SerializeField] private BallManagerInjector _ballManagerInjector;
+        [SerializeField] private ItemManagerInjector _itemManagerInjector;
         [SerializeField] private MainGameManager _mainGameManager;
         [SerializeField] private Canvas _uiCanvas;
         [SerializeField] private GameUI _gameUI;
@@ -42,6 +43,7 @@ namespace PinShot.Scenes.MainGame {
             // ゲーム内オブジェクトの初期化
             _playerInjector.Initialize();
             _ballManagerInjector.Initialize(_gameUI);
+            _itemManagerInjector.Initialize();
             _mainGameManager.Initialize(_gameUI);
 
             // 初期化終了後、ゲーム開始

@@ -1,5 +1,6 @@
 using PinShot.Database;
 using PinShot.Event;
+using R3;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,6 +20,7 @@ namespace PinShot.Scenes.MainGame.Player {
         [SerializeField] private InputAction _shotAction;
         private bool _initialized = false;
         private bool _inputEnabled = false;
+        private int _power = 0;
         public void Initialize(PlayerControlSettings playerControlSettings, PlayerView playerView, MissileLauncher missileLauncher) {
             _playerControlSettings = playerControlSettings;
             _playerView = playerView;
@@ -34,11 +36,33 @@ namespace PinShot.Scenes.MainGame.Player {
             _playerShooting = new PlayerShooting();
             _playerShooting.Initialize(_playerControlSettings, _missileLauncher);
 
+            // ゲームの状態を監視
             EventManager<GameStateEvent>.Subscribe(
                 this,
                 ev => {
                     _inputEnabled = ev.State == GameState.Play;
+
+                    if (ev.State == GameState.Standby) {
+                        _playerShooting.ResetFireInterval();
+                        _power = 0;
+                    }
                 });
+
+            // アイテムの効果を受け取る
+            _playerView.ItemEffectObservable
+                .Subscribe(effect => {
+                    switch (effect.type) {
+                        case Item.ItemType.SpeedUp:
+                            _playerShooting.AddFireInterval(effect.value);
+                            break;
+                        case Item.ItemType.PowerUp:
+                            _power += (int)effect.value;
+                            break;
+                        default:
+                            break;
+                    }
+                })
+                .AddTo(this);
             _initialized = true;
         }
 
@@ -60,7 +84,7 @@ namespace PinShot.Scenes.MainGame.Player {
         /// <param name="context"></param>
         private void OnShotActionPerformed(InputAction.CallbackContext context) {
             if (!_initialized || !_inputEnabled) return;
-            _playerShooting.Fire();
+            _playerShooting.Fire(_power);
         }
 
         private void OnDestroy() {

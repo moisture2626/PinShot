@@ -32,6 +32,7 @@ namespace PinShot.Scenes.MainGame.Player {
         }
 
         private MissileSettings _settings;
+        private float _addPower;
 
         // 衝突待機用のUniTaskCompletionSource
         private UniTaskCompletionSource<Collider2D> _triggerTaskSource;
@@ -40,8 +41,18 @@ namespace PinShot.Scenes.MainGame.Player {
             _missileView.enabled = true;
             _explosionView.enabled = false;
             _settings = settings;
+        }
 
-            _triggerTaskSource = new UniTaskCompletionSource<Collider2D>();
+        public void Reset() {
+            _missileView.enabled = true;
+            _explosionView.enabled = false;
+        }
+
+        public void SetAddPower(float addPower) {
+            _addPower = addPower;
+            if (_addPower + _settings.Damage > _settings.MaxDamage) {
+                _addPower = _settings.MaxDamage - _settings.Damage;
+            }
         }
 
         /// <summary>
@@ -126,7 +137,7 @@ namespace PinShot.Scenes.MainGame.Player {
         public (float damage, float impact) OnHitBall(Vector2 hitPosition) {
             // 2回以上ぶつからないようにする
             Collider2D.enabled = false;
-            return (_settings.Damage, _settings.ExplosionForce);
+            return (_settings.Damage + _addPower, _settings.ExplosionForce);
         }
 
         void OnDestroy() {

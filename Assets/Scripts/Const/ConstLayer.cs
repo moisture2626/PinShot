@@ -10,7 +10,7 @@ namespace PinShot.Const {
             Player = 8,
             Obstacle = 9,
             Bullet = 10,
-
+            Item = 11,
         }
 
         public static int GetLayerMask(params Layer[] layer) {

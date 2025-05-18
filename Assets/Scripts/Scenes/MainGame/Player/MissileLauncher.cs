@@ -25,8 +25,8 @@ namespace PinShot.Scenes.MainGame.Player {
                 OnDestroyMissile
             );
         }
-        public void Fire() {
-            FireAsync(destroyCancellationToken).Forget();
+        public void Fire(int addPower) {
+            FireAsync(addPower, destroyCancellationToken).Forget();
         }
 
         /// <summary>
@@ -34,8 +34,9 @@ namespace PinShot.Scenes.MainGame.Player {
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        private async UniTask FireAsync(CancellationToken token) {
+        private async UniTask FireAsync(int addPower, CancellationToken token) {
             var missile = _missilePool.Get();
+            missile.SetAddPower(addPower);
             SoundManager.Instance.PlaySE("Shot");
             await missile.FireFlow(Vector2.up, token);
 
@@ -47,13 +48,15 @@ namespace PinShot.Scenes.MainGame.Player {
 
         #region Pool
         private Missile CreateMissile() {
-            return Instantiate(_missilePrefab, _missileSpawnPoint.position, Quaternion.identity);
+            var missile = Instantiate(_missilePrefab, _missileSpawnPoint.position, Quaternion.identity);
+            missile.Initialize(_missileSettings);
+            return missile;
         }
 
         private void OnGetMissile(Missile missile) {
             missile.gameObject.SetActive(true);
             missile.transform.position = _missileSpawnPoint.position;
-            missile.Initialize(_missileSettings);
+            missile.Reset();
         }
         private void OnReleaseMissile(Missile missile) {
             missile.gameObject.SetActive(false);
