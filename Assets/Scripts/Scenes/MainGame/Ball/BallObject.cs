@@ -28,6 +28,8 @@ namespace PinShot.Scenes.MainGame.Ball {
         private BallSettings _settings;
 
         private float _launchSpeedOffset;
+        private float _launchVelocity;
+        private bool _isTrigger;
 
         public void Initialize(BallSettings settings) {
             _settings = settings;
@@ -48,18 +50,8 @@ namespace PinShot.Scenes.MainGame.Ball {
                 TakeDamage(damageDealer, collision.ClosestPoint(transform.position));
             }
             if (collision.gameObject.GetComponent<IBallEnter>() is IBallEnter ballEnter) {
-                _launchSpeedOffset = ballEnter.OnEnterBall(collision.ClosestPoint(transform.position));
-            }
-        }
-
-        /// <summary>
-        /// トリガー中の処理
-        /// </summary>
-        /// <param name="collision"></param>
-        private void OnTriggerStay2D(Collider2D collision) {
-            if (collision.gameObject.GetComponent<IBallEnter>() is IBallEnter ballEnter) {
-                var velocity = ballEnter.OnStayBall(collision.ClosestPoint(transform.position));
-                Rigidbody2D.linearVelocity = velocity + _launchSpeedOffset * Vector2.up;
+                (_launchSpeedOffset, _launchVelocity) = ballEnter.OnEnterBall(collision.ClosestPoint(transform.position));
+                _isTrigger = true;
             }
         }
 
@@ -72,6 +64,7 @@ namespace PinShot.Scenes.MainGame.Ball {
                 ballEnter.OnExitBall(collision.ClosestPoint(transform.position));
                 Collider2D.isTrigger = false;
                 Rigidbody2D.gravityScale = _settings.GravityScale;
+                _isTrigger = false;
             }
         }
 
@@ -97,6 +90,12 @@ namespace PinShot.Scenes.MainGame.Ball {
                 var direction = ((Vector2)transform.position - hitPosition).normalized;
                 Rigidbody2D.linearVelocity = Vector2.zero;
                 Rigidbody2D.AddForce(direction * impact, ForceMode2D.Impulse);
+            }
+        }
+
+        void FixedUpdate() {
+            if (_isTrigger) {
+                Rigidbody2D.linearVelocity = (_launchVelocity + _launchSpeedOffset) * Vector2.up;
             }
         }
 
