@@ -35,6 +35,8 @@ namespace PinShot.Scenes.MainGame {
         /// <returns></returns>
         private async UniTask GameFlow(CancellationToken token) {
             while (!token.IsCancellationRequested) {
+                // UIリセット
+                _gameUI.Initialize();
                 // スコアリセット
                 _scoreManager.Reset();
                 _scoreManager.OnChangeScore.Subscribe(s => {

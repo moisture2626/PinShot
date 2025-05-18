@@ -13,12 +13,18 @@ namespace PinShot.UI {
         /// <returns></returns>
         public static T Open<T>() where T : BaseWindow {
             if (!Instance._windows.TryGetValue(typeof(T).Name, out var window)) {
-                var prefab = Resources.Load<T>($"UI/Windows/{typeof(T).Name}");
-                if (prefab == null) {
+                var prefabGO = Resources.Load<GameObject>($"UI/Windows/{typeof(T).Name}");
+                if (prefabGO == null) {
                     Debug.LogError($"Window prefab not found: {typeof(T).Name}");
                     return null;
                 }
-                window = Instantiate(prefab, Instance.transform);
+                var windowInstance = Instantiate(prefabGO, Instance.transform);
+                window = windowInstance.GetComponent<T>();
+                if (window == null) {
+                    Debug.LogError($"Window component {typeof(T).Name} not found on prefab");
+                    Destroy(windowInstance);
+                    return null;
+                }
                 Instance._windows.Add(typeof(T).Name, window);
             }
             else {
