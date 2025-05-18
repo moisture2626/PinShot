@@ -53,7 +53,8 @@ http://dotween.demigiant.com/
 ## 音楽
 
 ### BGM
-Music : RYU ITO
+曲名: Sanctuary (music only), Barely
+作曲 : RYU ITO
 https://ryu110.com/
 
 詳細なライセンス情報はプロジェクトルートの
