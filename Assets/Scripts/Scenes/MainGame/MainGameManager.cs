@@ -4,6 +4,7 @@ using PinShot.Event;
 using PinShot.Scenes.MainGame.UI;
 using PinShot.Singletons;
 using PinShot.UI;
+using R3;
 using UnityEngine;
 
 namespace PinShot.Scenes.MainGame {
@@ -11,7 +12,9 @@ namespace PinShot.Scenes.MainGame {
 
         private CancellationTokenSource _gameFlowCancellation;
         private ScoreManager _scoreManager;
-        public void Initialize() {
+        private GameUI _gameUI;
+        public void Initialize(GameUI gameUI) {
+            _gameUI = gameUI;
             _gameFlowCancellation = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
             _scoreManager = new ScoreManager();
             _scoreManager.Initialize();
@@ -34,6 +37,10 @@ namespace PinShot.Scenes.MainGame {
             while (!token.IsCancellationRequested) {
                 // スコアリセット
                 _scoreManager.Reset();
+                _scoreManager.OnChangeScore.Subscribe(s => {
+                    // スコアUIの更新
+                    _gameUI.SetScore(s);
+                }).AddTo(destroyCancellationToken);
 
                 // 開始前のカウントダウンを待機
                 await StandbyWindow.OpenAsync(token);

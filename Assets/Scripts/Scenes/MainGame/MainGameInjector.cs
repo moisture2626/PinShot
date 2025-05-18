@@ -16,6 +16,7 @@ namespace PinShot.Scenes.MainGame {
         [SerializeField] private BallManagerInjector _ballManagerInjector;
         [SerializeField] private MainGameManager _mainGameManager;
         [SerializeField] private Canvas _uiCanvas;
+        [SerializeField] private GameUI _gameUI;
 
         private void Awake() {
             Inject(destroyCancellationToken).Forget();
@@ -36,8 +37,8 @@ namespace PinShot.Scenes.MainGame {
 
             // ゲーム内オブジェクトの初期化
             _playerInjector.Initialize();
-            _ballManagerInjector.Initialize();
-            _mainGameManager.Initialize();
+            _ballManagerInjector.Initialize(_gameUI);
+            _mainGameManager.Initialize(_gameUI);
 
             // 初期化終了後、ゲーム開始
             _mainGameManager.BeginGame();
