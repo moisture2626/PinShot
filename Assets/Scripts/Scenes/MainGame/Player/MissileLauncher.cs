@@ -1,6 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using PinShot.Database;
+using PinShot.Singletons;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -35,8 +36,9 @@ namespace PinShot.Scenes.MainGame.Player {
         /// <returns></returns>
         private async UniTask FireAsync(CancellationToken token) {
             var missile = _missilePool.Get();
-
+            SoundManager.Instance.PlaySE("Shot");
             await missile.FireFlow(Vector2.up, token);
+
             token.ThrowIfCancellationRequested();
             // ミサイルの発射後、プールに戻す
             _missilePool.Release(missile);

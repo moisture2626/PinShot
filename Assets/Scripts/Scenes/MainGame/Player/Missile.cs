@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using PinShot.Database;
 using PinShot.Scenes.MainGame.Ball;
+using PinShot.Singletons;
 using UnityEngine;
 
 namespace PinShot.Scenes.MainGame.Player {
@@ -58,7 +59,8 @@ namespace PinShot.Scenes.MainGame.Player {
             await WaitForTrigger(token);
             Rigidbody2D.linearVelocity = Vector2.zero;
 
-            // 爆発
+            // 爆発音
+            SoundManager.Instance.PlaySE("Explosion");
             // 爆発後も当たり判定を残す、エフェクトはさらに長い時間フェードアウトさせる
             await UniTask.WhenAll(
                 ExplosionFlow(_settings.ExplosionLifeTime, token),

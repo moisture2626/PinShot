@@ -51,6 +51,8 @@ namespace PinShot.Scenes.MainGame.Ball {
             }
             if (collision.gameObject.GetComponent<IBallEnter>() is IBallEnter ballEnter) {
                 (_launchSpeedOffset, _launchVelocity) = ballEnter.OnEnterBall(collision.ClosestPoint(transform.position));
+                Rigidbody2D.gravityScale = 0;
+                Collider2D.isTrigger = true;
                 _isTrigger = true;
             }
         }
