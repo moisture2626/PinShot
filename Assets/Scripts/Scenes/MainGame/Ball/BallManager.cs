@@ -46,11 +46,11 @@ namespace PinShot.Scenes.MainGame.Ball {
 
             // ゲームオーバーの処理をHealthでやる
             _health = new Health();
-            _health.Current
+            _health.OnChangeValue
                 .Where(_ => _isRunning)
                 .Subscribe(h => {
-                    _gameUI.SetLife((int)h);
-                    if (h <= 0) {
+                    _gameUI.HealthView.SetHealth(h.prev, h.current, h.max);
+                    if (h.current <= 0) {
                         // ゲームオーバー
                         EventManager<GameStateEvent>.TriggerEvent(new GameStateEvent(GameState.GameOver));
                     }
@@ -59,7 +59,8 @@ namespace PinShot.Scenes.MainGame.Ball {
             // イベントの購読
             EventManager<GameStateEvent>.Subscribe(this, ev => {
                 if (ev.State == GameState.Standby) {
-                    _gameUI.SetLife(launcherSettings.GameOverCount);
+                    int maxCount = launcherSettings.GameOverCount;
+                    _gameUI.HealthView.Initialize(maxCount);
                     _health.Initialize(launcherSettings.GameOverCount);
                 }
                 if (ev.State == GameState.Play && !_isRunning) {
@@ -169,7 +170,7 @@ namespace PinShot.Scenes.MainGame.Ball {
         /// <param name="token"></param>
         /// <returns></returns>
         private async UniTask WaitForBallDead(BallObject ball, CancellationToken token) {
-            await UniTask.WaitUntil(() => ball.Health.Current.Value <= 0, cancellationToken: token);
+            await UniTask.WaitUntil(() => ball.Health.Current <= 0, cancellationToken: token);
             token.ThrowIfCancellationRequested();
             // 破壊したらスコアとコンボ加算
             EventManager<ScoreEvent>.TriggerEvent(new ScoreEvent(_ballSettings.Score, _combo));

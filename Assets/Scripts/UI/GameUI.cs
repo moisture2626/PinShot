@@ -7,7 +7,8 @@ namespace PinShot.UI {
     /// ゲーム中に表示するUI
     /// </summary>
     public class GameUI : MonoBehaviour {
-        [SerializeField] private GameObject[] _life;
+        [SerializeField] private IconHealthView _healthView;
+        public IconHealthView HealthView => _healthView;
         [SerializeField] private TMP_Text _score;
         [SerializeField] private TMP_Text _highScore;
         [SerializeField] private TMP_Text _combo;
@@ -18,11 +19,7 @@ namespace PinShot.UI {
             SetCombo(0);
             SetNextGauge(1);
         }
-        public void SetLife(int life) {
-            for (int i = 0; i < _life.Length; i++) {
-                _life[i].SetActive(i < life);
-            }
-        }
+
         public void SetScore(int score) {
             _score.text = score.ToString();
         }
