@@ -13,6 +13,7 @@ namespace PinShot.UI {
 
         public void InitializeHealth(float max) {
             if (_isInitialized) {
+                SetHealth(0, max, max);
                 return;
             }
             for (int i = 0; i < (int)max; i++) {
@@ -35,6 +36,14 @@ namespace PinShot.UI {
                     _lifeIcons.Add(icon);
                 }
             }
+            else if (_lifeIcons.Count > (int)max) {
+                // アイコンの数が多い場合は削除する
+                for (int i = _lifeIcons.Count - 1; i >= (int)max; i--) {
+                    Destroy(_lifeIcons[i]);
+                    _lifeIcons.RemoveAt(i);
+                }
+            }
+            // アイコンの表示を更新する
             for (int i = 0; i < (int)max; i++) {
                 _lifeIcons[i].SetActive(i < (int)current);
             }
