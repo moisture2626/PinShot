@@ -273,11 +273,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1091621844}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6faa439e3f23cc54f9952fc3bf719912, type: 3}
+  m_Script: {fileID: 11500000, guid: 7482d2194549cdd4ea9e9693102fe4ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _itemPrefab: {fileID: 720554438637552792, guid: ef089ff3c6acf304f8978c7795396163, type: 3}
-  _limit: {fileID: 6195548663255333558}
 --- !u!114 &1091621847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,10 +286,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1091621844}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 878e8c75b3f0bd141a3bcb680f7ddda9, type: 3}
+  m_Script: {fileID: 11500000, guid: 862dde0bc7d974b4c9acb23f69fa8755, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemManager: {fileID: 1091621846}
+  _itemSpawner: {fileID: 1091621846}
+  _deadLine: {fileID: 6195548663255333558}
 --- !u!114 &1202109570 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2670518045626903964, guid: 7b4450247ab9c6148a807535b00af486, type: 3}
@@ -336,7 +336,7 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _stageInjector: {fileID: 1202109570}
-  _itemManagerInjector: {fileID: 1091621847}
+  _itemInjector: {fileID: 1091621847}
   _playerInjector: {fileID: 9114662402087261305}
   _gameUI: {fileID: 1686820369}
   _uiCanvas: {fileID: 1042360168}

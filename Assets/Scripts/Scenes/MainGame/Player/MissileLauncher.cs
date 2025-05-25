@@ -18,7 +18,6 @@ namespace PinShot.Scenes.MainGame.Player {
         private MissileSettings _missileSettings;
         [Inject]
         public void Construct(MasterDataManager mst) {
-            Debug.Log("MissileLauncher Constructed");
             _missileSettings = mst.GetTable<MissileSettings>();
 
             _missilePool = new ObjectPool<Missile>(

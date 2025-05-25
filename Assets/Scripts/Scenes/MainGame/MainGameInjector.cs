@@ -13,7 +13,7 @@ namespace PinShot.Scenes.MainGame {
     /// </summary>
     public class MainGameInjector : LifetimeScope {
         [SerializeField] private StageInjector _stageInjector;
-        [SerializeField] private ItemManagerInjector _itemManagerInjector;
+        [SerializeField] private ItemInjector _itemInjector;
         [SerializeField] private PlayerInjector _playerInjector;
         [SerializeField] private GameUI _gameUI;
         [SerializeField] private Canvas _uiCanvas;
@@ -26,13 +26,14 @@ namespace PinShot.Scenes.MainGame {
             // イベント系
             _ = new EventManager<GameStateEvent>();
             _ = new EventManager<ScoreEvent>();
+            _ = new EventManager<ItemDropEvent>();
 
             // コンテナに登録
             builder.Register<ScoreModel>(Lifetime.Scoped);
 
             builder.RegisterComponent(_gameUI).AsImplementedInterfaces();
 
-            _itemManagerInjector.Initialize();
+            _itemInjector.Configure(builder);
             _stageInjector.Configure(builder);
             _playerInjector.Configure(builder);
 

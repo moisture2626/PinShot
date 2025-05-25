@@ -44,7 +44,6 @@ namespace PinShot.Scenes.MainGame.Ball {
         }
 
         public void Initialize() {
-            Debug.Log("BallLauncherPresenter Initialized");
             // ゲームオーバーの処理をHealthでやる
             _health = new Health();
             _health.OnChangeValue
@@ -59,7 +58,6 @@ namespace PinShot.Scenes.MainGame.Ball {
 
             // イベントの購読
             EventManager<GameStateEvent>.Subscribe(ev => {
-                Debug.Log($"GameState Changed: {ev.State}");
                 if (ev.State == GameState.Standby) {
                     int maxCount = _launcherSettings.GameOverCount;
                     _healthView.InitializeHealth(maxCount);
@@ -182,7 +180,7 @@ namespace PinShot.Scenes.MainGame.Ball {
             // アイテムドロップ
             bool drop = UnityEngine.Random.Range(0f, 1f) < _ballSettings.ItemDropRate;
             if (drop) {
-                ItemManager.DropItem(ball.transform.position);
+                EventManager<ItemDropEvent>.TriggerEvent(new ItemDropEvent(ball.transform.position));
             }
         }
 

@@ -32,7 +32,7 @@ namespace PinShot.Scenes.MainGame.Player {
             MissileLauncher missileLauncher,
             Transform leftLimit,
             Transform rightLimit) {
-            Debug.Log("PlayerPresenter Initialized");
+
             _leftLimit = leftLimit;
             _rightLimit = rightLimit;
 

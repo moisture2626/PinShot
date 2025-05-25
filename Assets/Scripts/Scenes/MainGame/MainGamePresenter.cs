@@ -11,7 +11,7 @@ using UnityEngine;
 using VContainer.Unity;
 
 namespace PinShot.Scenes.MainGame {
-    public class MainGamePresenter : IStartable, IDisposable {
+    public class MainGamePresenter : IInitializable, IDisposable {
 
         private CancellationDisposable _gameFlowCancellation;
         private ScoreModel _score;
@@ -29,7 +29,7 @@ namespace PinShot.Scenes.MainGame {
             _score = scoreManager;
         }
 
-        public void Start() {
+        public void Initialize() {
             EventManager<GameStateEvent>
                 .Subscribe(ev => Debug.Log($"GameState Changed: {ev.State}".SetColor(Color.green)))
                 .AddTo(_disposables);
