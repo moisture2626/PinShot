@@ -6,9 +6,11 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using PinShot.Database;
 using UnityEngine;
+using VContainer;
 
 namespace PinShot.Singletons {
-    public class SoundManager : BaseSingleton<SoundManager> {
+    public class SoundManager : MonoBehaviour {
+        public static SoundManager Instance { get; private set; }
         // 設定関連
         [Header("BGM設定")]
         [SerializeField] private BGMTable _bgmTable;
@@ -36,7 +38,11 @@ namespace PinShot.Singletons {
         public bool IsLoaded { get; private set; } = false;
         private const string _saveDataKey = "AudioVolume";
 
-        protected override void Initialize() {
+        private SaveDataManager _saveDataManager;
+
+        [Inject]
+        public void Construct(SaveDataManager saveDataManager) {
+            _saveDataManager = saveDataManager;
             InitializeAudioSources();
 
             // マスターデータの初期化
@@ -45,7 +51,8 @@ namespace PinShot.Singletons {
             if (_seTable != null)
                 _seTable.Initialize();
 
-            GetSaveData(destroyCancellationToken).Forget();
+            GetSaveData();
+            Instance = this;
         }
 
         private void InitializeAudioSources() {
@@ -66,12 +73,10 @@ namespace PinShot.Singletons {
         /// <summary>
         /// セーブデータの読み込み
         /// </summary>
-        /// <param name="token"></param>
         /// <returns></returns>
-        private async UniTask GetSaveData(CancellationToken token) {
-            await UniTask.WaitUntil(() => SaveDataManager.Instance != null, cancellationToken: token);
+        private void GetSaveData() {
             // セーブデータから音量を取得
-            var saveData = SaveDataManager.Instance.Load<AudioVolume>(_saveDataKey);
+            var saveData = _saveDataManager.Load<AudioVolume>(_saveDataKey);
             if (saveData != null) {
                 _bgmMasterVolume = saveData.BGMVolume;
                 _seMasterVolume = saveData.SEVolume;
@@ -398,13 +403,13 @@ namespace PinShot.Singletons {
                 BGMVolume = _bgmMasterVolume,
                 SEVolume = _seMasterVolume
             };
-            SaveDataManager.Instance.Save(_saveDataKey, volumeData);
+            _saveDataManager.Save(_saveDataKey, volumeData);
         }
 
-        protected override void OnDestroy() {
+        private void OnDestroy() {
             StopAllSounds();
             ClearSECache();
-            base.OnDestroy();
+            Instance = null;
         }
 
         [Serializable]

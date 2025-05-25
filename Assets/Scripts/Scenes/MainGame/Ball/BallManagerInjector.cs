@@ -1,5 +1,3 @@
-using PinShot.Database;
-using PinShot.Singletons;
 using PinShot.UI;
 using UnityEngine;
 
@@ -12,9 +10,9 @@ namespace PinShot.Scenes.MainGame.Ball {
 
 
         public void Initialize(GameUI gameUI) {
-            var ballSettings = MasterDataManager.GetTable<BallSettings>();
-            var launcherSettings = MasterDataManager.GetTable<BallManagerSettings>();
-            _ballManager.Initialize(launcherSettings, ballSettings, gameUI);
+            //var ballSettings = MasterDataManager.GetTable<BallSettings>();
+            //var launcherSettings = MasterDataManager.GetTable<BallManagerSettings>();
+            //_ballManager.Initialize(launcherSettings, ballSettings, gameUI);
         }
     }
 }

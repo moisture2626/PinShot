@@ -1,10 +1,10 @@
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using PinShot.Event;
 using PinShot.Scenes.MainGame.UI;
 using PinShot.Singletons;
 using PinShot.UI;
 using R3;
+using System.Threading;
 using UnityEngine;
 
 namespace PinShot.Scenes.MainGame {
@@ -20,23 +20,18 @@ namespace PinShot.Scenes.MainGame {
             _scoreManager.Initialize();
         }
 
-        /// <summary>
-        /// ゲーム開始
-        /// </summary>
-        public void BeginGame() {
-            // BGM再生開始
-            SoundManager.Instance.PlayBGM("Game", 0.2f);
-
-            EventManager<GameStateEvent>.TriggerEvent(GameStateEvent.Create(GameState.Standby));
-            GameFlow(_gameFlowCancellation.Token).Forget();
-        }
 
         /// <summary>
         /// ゲームループ
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        private async UniTask GameFlow(CancellationToken token) {
+        public async UniTask GameLoop(CancellationToken token) {
+            Debug.Log("GameLoop Start");
+            // BGM再生開始
+            SoundManager.Instance.PlayBGM("Game", 0.2f);
+            EventManager<GameStateEvent>.TriggerEvent(GameStateEvent.Create(GameState.Standby));
+
             while (!token.IsCancellationRequested) {
                 // UIリセット
                 _gameUI.Initialize();

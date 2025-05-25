@@ -2,9 +2,10 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
+using VContainer;
 
 namespace PinShot.Singletons {
-    public class SaveDataManager : BaseSingleton<SaveDataManager> {
+    public class SaveDataManager : MonoBehaviour {
         // 暗号化のためのキーとIV（初期化ベクトル）
         private string _encryptionKey;  // 32バイト
         private string _encryptionIV;   // 16バイト
@@ -12,9 +13,8 @@ namespace PinShot.Singletons {
         // 暗号化を使用するかどうか
         [SerializeField] private bool _useEncryption = true;
 
-        protected override void Initialize() {
-            base.Initialize();
-
+        [Inject]
+        public void Construct() {
             // デバイス固有の情報からキーを生成（より安全）
             string deviceId = SystemInfo.deviceUniqueIdentifier;
             _encryptionKey = GenerateKey(deviceId, 32);
@@ -42,7 +42,7 @@ namespace PinShot.Singletons {
         }
 
         /// <summary>
-        /// 文字列を暗号化します
+        /// 文字列を暗号化
         /// </summary>
         /// <param name="plainText">暗号化する文字列</param>
         /// <returns>暗号化された文字列</returns>
@@ -82,7 +82,7 @@ namespace PinShot.Singletons {
         }
 
         /// <summary>
-        /// 文字列を復号化します
+        /// 文字列を復号化
         /// </summary>
         /// <param name="cipherText">復号化する暗号文</param>
         /// <returns>復号化された文字列</returns>
@@ -231,7 +231,7 @@ namespace PinShot.Singletons {
         }
 
         /// <summary>
-        /// 指定したキーのデータが存在するか確認します
+        /// 指定したキーのデータが存在するか確認
         /// </summary>
         /// <param name="key">確認するキー</param>
         /// <returns>データが存在すればtrue</returns>

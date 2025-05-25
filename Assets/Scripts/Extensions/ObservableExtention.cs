@@ -34,6 +34,24 @@ namespace PinShot.Extensions {
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static IDisposable SubscribeAwait<T>(this Observable<T> source, MonoBehaviour addToComponent, Entity<bool> entity, Func<T, CancellationToken, ValueTask> onNext) {
+            var subscription = source.SubscribeAwait(entity, onNext);
+
+            if (addToComponent != null) {
+                subscription.RegisterTo(addToComponent.destroyCancellationToken);
+            }
+            return subscription;
+        }
+
+        /// <summary>
+        /// Observableの購読（非同期）
+        /// entityを共有していれば同時押しできない
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="entity"></param>
+        /// <param name="onNext"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static IDisposable SubscribeAwait<T>(this Observable<T> source, Entity<bool> entity, Func<T, CancellationToken, ValueTask> onNext) {
 
             var subscription = source.SubscribeAwait(async (ev, t) => {
                 if (entity.Value) {
@@ -55,9 +73,6 @@ namespace PinShot.Extensions {
                 }
             });
 
-            if (addToComponent != null) {
-                subscription.RegisterTo(addToComponent.destroyCancellationToken);
-            }
             return subscription;
         }
     }

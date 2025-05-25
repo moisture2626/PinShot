@@ -1,35 +1,51 @@
+using System;
 using PinShot.Database;
 using PinShot.Event;
+using PinShot.Singletons;
 using R3;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using VContainer.Unity;
 
 namespace PinShot.Scenes.MainGame.Player {
     /// <summary>
     /// プレイヤーの操作を行うクラス
     /// </summary>
-    public class PlayerPresenter : MonoBehaviour {
-        [SerializeField] private Transform _leftLimit;
-        [SerializeField] private Transform _rightLimit;
+    public class PlayerPresenter : ITickable, IDisposable {
+        private Transform _leftLimit;
+        private Transform _rightLimit;
         private PlayerControlSettings _playerControlSettings;
         private PlayerView _playerView;
         private MissileLauncher _missileLauncher;
         private PlayerMovement _playerMovement;
         private PlayerShooting _playerShooting;
-        [SerializeField] private InputAction _moveAction;
-        [SerializeField] private InputAction _shotAction;
+        private InputAction _moveAction;
+        private InputAction _shotAction;
         private bool _initialized = false;
         private bool _inputEnabled = false;
         private int _power = 0;
-        public void Initialize(PlayerControlSettings playerControlSettings, PlayerView playerView, MissileLauncher missileLauncher) {
-            _playerControlSettings = playerControlSettings;
+
+
+        public PlayerPresenter(
+            MasterDataManager mst,
+            PlayerView playerView,
+            MissileLauncher missileLauncher,
+            Transform leftLimit,
+            Transform rightLimit) {
+
+            _leftLimit = leftLimit;
+            _rightLimit = rightLimit;
+
+            _playerControlSettings = mst.GetTable<PlayerControlSettings>();
             _playerView = playerView;
 
             _missileLauncher = missileLauncher;
 
+            // 入力アクションを設定
+            _moveAction = _playerControlSettings.MoveAction;
+            _shotAction = _playerControlSettings.ShotAction;
             _moveAction.Enable();
             _shotAction.Enable();
-
             _shotAction.performed += OnShotActionPerformed;
             _playerMovement = new PlayerMovement();
             _playerMovement.Initialize(_playerControlSettings, _playerView, _leftLimit, _rightLimit);
@@ -38,7 +54,7 @@ namespace PinShot.Scenes.MainGame.Player {
 
             // ゲームの状態を監視
             EventManager<GameStateEvent>.Subscribe(
-                this,
+                _playerView,
                 ev => {
                     _inputEnabled = ev.State == GameState.Play;
 
@@ -62,13 +78,13 @@ namespace PinShot.Scenes.MainGame.Player {
                             break;
                     }
                 })
-                .AddTo(this);
+                .AddTo(_playerView);
             _initialized = true;
         }
 
 
 
-        private void Update() {
+        public void Tick() {
 
             if (_initialized && _inputEnabled) {
                 // マウス位置を常に監視
@@ -87,7 +103,8 @@ namespace PinShot.Scenes.MainGame.Player {
             _playerShooting.Fire(_power);
         }
 
-        private void OnDestroy() {
+
+        public void Dispose() {
             _shotAction?.Dispose();
             _moveAction?.Dispose();
         }

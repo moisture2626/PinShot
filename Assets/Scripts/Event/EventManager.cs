@@ -1,9 +1,9 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using PinShot.Extensions;
 using R3;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace PinShot.Event {
@@ -60,15 +60,19 @@ namespace PinShot.Event {
         /// <param name="onNext"></param>
         /// <returns></returns>
         public static IDisposable Subscribe(MonoBehaviour addToComponent, Action<TEvent> onNext) {
+            var subscription = Subscribe(onNext);
+            if (addToComponent != null) {
+                subscription.RegisterTo(addToComponent.destroyCancellationToken);
+            }
+            return subscription;
+        }
+        public static IDisposable Subscribe(Action<TEvent> onNext) {
             var instance = GetInstance();
             var subject = instance._subject;
 
             var subscription = subject.Subscribe(ev => {
                 onNext(ev);
             });
-            if (addToComponent != null) {
-                subscription.RegisterTo(addToComponent.destroyCancellationToken);
-            }
             return subscription;
         }
 
@@ -79,9 +83,14 @@ namespace PinShot.Event {
         /// <param name="onNext"></param>
         /// <returns></returns>
         public static IDisposable SubscribeAwait(MonoBehaviour addToComponent, Func<TEvent, CancellationToken, ValueTask> onNext) {
+            return SubscribeAwait(onNext).AddTo(addToComponent);
+        }
+        
+        public static IDisposable SubscribeAwait(Func<TEvent, CancellationToken, ValueTask> onNext) {
             var instance = GetInstance();
             var subject = instance._subject;
-            return subject.SubscribeAwait(addToComponent, onNext);
+            var entity = new Entity<bool>(false);
+            return subject.SubscribeAwait(entity, onNext);
         }
 
         /// <summary>
@@ -120,13 +129,10 @@ namespace PinShot.Event {
 
         public void Dispose() {
             _subject?.Dispose();
-        }
-
-        public static void DisposeAll() {
             if (_instance != null) {
-                _instance.Dispose();
                 _instance = null;
             }
         }
+
     }
 }

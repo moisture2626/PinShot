@@ -72,7 +72,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4546520353648820528}
   - component: {fileID: 7275272640685691048}
-  - component: {fileID: 3383611324772615395}
   - component: {fileID: 5518741714210952942}
   m_Layer: 8
   m_Name: Player
@@ -111,57 +110,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca5147c8050fe544eb873f0226641dc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _presenter: {fileID: 3383611324772615395}
+  parentReference:
+    TypeName: PinShot.Scenes.MainGame.MainGameInjector
+  autoRun: 1
+  autoInjectGameObjects: []
   _view: {fileID: 8577540638372644640}
   _missileLauncher: {fileID: 5518741714210952942}
---- !u!114 &3383611324772615395
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2521514552265067635}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88f61bcf560ca554cbd3d21224a7b96f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   _leftLimit: {fileID: 3867813039218079539}
   _rightLimit: {fileID: 6174321947286446768}
-  _moveAction:
-    m_Name: Move
-    m_Type: 0
-    m_ExpectedControlType: Vector2
-    m_Id: 60213aee-8c09-4193-b0ed-1f4a72ca68f7
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 6319b01e-17ec-4efa-954b-cfc723c34219
-      m_Path: <Mouse>/position
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Move
-      m_Flags: 0
-    m_Flags: 0
-  _shotAction:
-    m_Name: Shot
-    m_Type: 1
-    m_ExpectedControlType: Button
-    m_Id: 00b9940c-2c06-4ef2-b9d8-b217cac9ef1d
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 4dfc620b-0f2f-4906-b85c-85129b7a20cf
-      m_Path: <Mouse>/leftButton
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Shot
-      m_Flags: 0
-    m_Flags: 0
 --- !u!114 &5518741714210952942
 MonoBehaviour:
   m_ObjectHideFlags: 0
