@@ -3,6 +3,7 @@ using PinShot.Const;
 using PinShot.Singletons;
 using PinShot.UI;
 using R3;
+using VContainer.Unity;
 
 #if !UNITY_EDITOR
 
@@ -10,12 +11,14 @@ using UnityEngine;
 
 #endif
 namespace PinShot.Scenes.Title {
-    public class TitlePresenter {
+    public class TitlePresenter : IInitializable {
         private TitleView _view;
 
-        public void Initialize(TitleView view) {
+        public TitlePresenter(TitleView view) {
             _view = view;
+        }
 
+        public void Initialize() {
             Subscribe();
             SoundManager.Instance.PlayBGM("Title");
         }

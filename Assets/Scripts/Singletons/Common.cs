@@ -1,7 +1,13 @@
-using PinShot.Singletons;
+using UnityEngine;
+
 namespace PinShot.Scenes.Common {
-
-    public class Common : BaseSingleton<Common> {
-
+    /// <summary>
+    /// 特に何もしない
+    /// カメラを持っているので各シーンで使い回すためのもの
+    /// </summary>
+    public class Common : MonoBehaviour {
+        void Awake() {
+            DontDestroyOnLoad(gameObject);
+        }
     }
 }

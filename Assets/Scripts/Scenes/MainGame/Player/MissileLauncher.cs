@@ -4,6 +4,7 @@ using PinShot.Database;
 using PinShot.Singletons;
 using UnityEngine;
 using UnityEngine.Pool;
+using VContainer;
 
 namespace PinShot.Scenes.MainGame.Player {
     /// <summary>
@@ -15,8 +16,9 @@ namespace PinShot.Scenes.MainGame.Player {
 
         ObjectPool<Missile> _missilePool;
         private MissileSettings _missileSettings;
-        public void Initialize(MissileSettings missileSettings) {
-            _missileSettings = missileSettings;
+        [Inject]
+        public void Construct(MasterDataManager mst) {
+            _missileSettings = mst.GetTable<MissileSettings>();
 
             _missilePool = new ObjectPool<Missile>(
                 CreateMissile,

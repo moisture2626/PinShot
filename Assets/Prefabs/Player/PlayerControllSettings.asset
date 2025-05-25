@@ -14,3 +14,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveSpeed: 7
   _fireInterval: 0.5
+  _minInterval: 0.2
+  _moveAction:
+    m_Name: Move
+    m_Type: 0
+    m_ExpectedControlType: Vector2
+    m_Id: 57708e36-5dc6-4854-9cdd-4475f432b564
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 34d87b1c-b8c2-4afb-8099-74045410d926
+      m_Path: <Mouse>/position
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Move
+      m_Flags: 0
+    m_Flags: 0
+  _shotAction:
+    m_Name: Shot
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 879524a9-1853-4ec3-85d6-c3ad1ea41472
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 78cb066c-e237-4d22-a6c8-b41880ddb5ac
+      m_Path: <Mouse>/leftButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Shot
+      m_Flags: 0
+    m_Flags: 0

@@ -6,8 +6,8 @@ namespace PinShot.UI {
     /// <summary>
     /// ゲーム中に表示するUI
     /// </summary>
-    public class GameUI : MonoBehaviour {
-        [SerializeField] private GameObject[] _life;
+    public class GameUI : MonoBehaviour, IGameUIInitializer, IHealthView, IScoreView, IComboView, IHighScoreView, IIntervalView {
+        [SerializeField] private IconHealthView _healthView;
         [SerializeField] private TMP_Text _score;
         [SerializeField] private TMP_Text _highScore;
         [SerializeField] private TMP_Text _combo;
@@ -18,10 +18,11 @@ namespace PinShot.UI {
             SetCombo(0);
             SetNextGauge(1);
         }
-        public void SetLife(int life) {
-            for (int i = 0; i < _life.Length; i++) {
-                _life[i].SetActive(i < life);
-            }
+        public void InitializeHealth(float max) {
+            _healthView.InitializeHealth(max);
+        }
+        public void SetHealth(float prev, float current, float max) {
+            _healthView.SetHealth(prev, current, max);
         }
         public void SetScore(int score) {
             _score.text = score.ToString();
@@ -32,7 +33,11 @@ namespace PinShot.UI {
         public void SetCombo(int combo) {
             _combo.text = combo.ToString();
         }
-        public void SetNextGauge(float value) {
+
+        public void SetInterval(float current, float max) {
+            SetNextGauge(current / max);
+        }
+        private void SetNextGauge(float value) {
             _nextGauge.fillAmount = value;
         }
     }

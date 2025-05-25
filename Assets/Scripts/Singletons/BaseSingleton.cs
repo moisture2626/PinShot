@@ -1,16 +1,16 @@
 using UnityEngine;
+using VContainer;
 
 namespace PinShot.Singletons {
     public abstract class BaseSingleton<T> : MonoBehaviour where T : BaseSingleton<T> {
         public static T Instance { get; private set; }
-
-        protected virtual void Awake() {
+        [Inject]
+        public void Construct() {
             if (Instance != null && Instance != this) {
                 Destroy(gameObject);
                 return;
             }
             Initialize();
-            DontDestroyOnLoad(gameObject);
             Instance = (T)this;
         }
 

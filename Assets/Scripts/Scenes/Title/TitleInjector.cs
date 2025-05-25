@@ -1,35 +1,20 @@
-using System.Threading;
-using Cysharp.Threading.Tasks;
-using PinShot.Singletons;
 using UnityEngine;
+using VContainer;
+using VContainer.Unity;
 
 namespace PinShot.Scenes.Title {
     /// <summary>
     /// タイトルシーンのDI
     /// </summary>
-    public class TitleInjector : MonoBehaviour {
+    public class TitleInjector : LifetimeScope {
         [SerializeField] private TitleView _view;
-        private TitlePresenter _presenter;
-        void Awake() {
-            Inject(destroyCancellationToken).Forget();
+
+        protected override void Configure(IContainerBuilder builder) {
+            // Viewを登録
+            builder.RegisterComponent(_view);
+            // Presenterを登録
+            builder.RegisterEntryPoint<TitlePresenter>(Lifetime.Scoped);
         }
 
-        private async UniTask Inject(CancellationToken token) {
-            // まずSaveDataManagerを待機
-            await UniTask.WaitUntil(() => SaveDataManager.Instance, cancellationToken: token);
-            // その後、Singletonを待機
-            await UniTask.WhenAll(
-                UniTask.WaitUntil(() => MasterDataManager.Instance, cancellationToken: token),
-                UniTask.WaitUntil(() => WindowManager.Instance, cancellationToken: token),
-                UniTask.WaitUntil(() => SoundManager.Instance, cancellationToken: token)
-            );
-
-            _presenter = new TitlePresenter();
-            _presenter.Initialize(_view);
-        }
-
-        void OnDestroy() {
-
-        }
     }
 }

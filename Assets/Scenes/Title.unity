@@ -396,6 +396,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc586e5bd45af5a4e821d6ef4d6ba2a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parentReference:
+    TypeName: PinShot.DI.RootLifetimeScope
+  autoRun: 1
+  autoInjectGameObjects: []
   _view: {fileID: 502813307}
 --- !u!4 &536198788
 Transform:

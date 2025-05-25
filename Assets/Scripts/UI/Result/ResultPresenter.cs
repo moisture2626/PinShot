@@ -13,11 +13,11 @@ namespace PinShot.UI {
     /// </summary>
     public class ResultPresenter {
         private ResultWindow _view;
-        private ScoreManager _scoreManager;
+        private ScoreModel _score;
 
-        public void Initialize(ResultWindow view, ScoreManager scoreManager) {
+        public void Initialize(ResultWindow view, ScoreModel score) {
             _view = view;
-            _scoreManager = scoreManager;
+            _score = score;
             Subscribe();
             // 結果表示
             ShowResult(_view.destroyCancellationToken).Forget();
@@ -42,8 +42,8 @@ namespace PinShot.UI {
         /// <param name="token"></param>
         /// <returns></returns>
         private async UniTask ShowResult(CancellationToken token) {
-            int score = _scoreManager.Score;
-            bool isHighScore = _scoreManager.HighScore <= score;
+            int score = _score.Score;
+            bool isHighScore = _score.HighScore <= score;
             await _view.ShowScore(score, isHighScore, token);
             await UniTask.Delay(500, cancellationToken: token);
             _view.ShowButtons();

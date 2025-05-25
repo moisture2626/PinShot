@@ -1,17 +1,23 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using PinShot.Extensions;
 using R3;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace PinShot.Event {
-
+    /// <summary>
+    /// イベント用のInterface
+    /// </summary>
     public interface IEvent {
 
     }
 
+    /// <summary>
+    /// ゲームで起きたイベント内容を通知したりするクラス
+    /// </summary>
+    /// <typeparam name="TEvent"></typeparam>
     public class EventManager<TEvent> : IDisposable where TEvent : struct, IEvent {
         private static EventManager<TEvent> _instance;
         private Subject<TEvent> _subject;
@@ -25,6 +31,7 @@ namespace PinShot.Event {
         /// <returns></returns>
         private static EventManager<TEvent> GetInstance() {
             if (_instance == null) {
+                // スレッドセーフにインスタンスを生成(念の為)
                 lock (_lock) {
                     if (_instance == null) {
                         _instance = new EventManager<TEvent>();
@@ -53,15 +60,19 @@ namespace PinShot.Event {
         /// <param name="onNext"></param>
         /// <returns></returns>
         public static IDisposable Subscribe(MonoBehaviour addToComponent, Action<TEvent> onNext) {
+            var subscription = Subscribe(onNext);
+            if (addToComponent != null) {
+                subscription.RegisterTo(addToComponent.destroyCancellationToken);
+            }
+            return subscription;
+        }
+        public static IDisposable Subscribe(Action<TEvent> onNext) {
             var instance = GetInstance();
             var subject = instance._subject;
 
             var subscription = subject.Subscribe(ev => {
                 onNext(ev);
             });
-            if (addToComponent != null) {
-                subscription.RegisterTo(addToComponent.destroyCancellationToken);
-            }
             return subscription;
         }
 
@@ -72,16 +83,22 @@ namespace PinShot.Event {
         /// <param name="onNext"></param>
         /// <returns></returns>
         public static IDisposable SubscribeAwait(MonoBehaviour addToComponent, Func<TEvent, CancellationToken, ValueTask> onNext) {
+            return SubscribeAwait(onNext).AddTo(addToComponent);
+        }
+        
+        public static IDisposable SubscribeAwait(Func<TEvent, CancellationToken, ValueTask> onNext) {
             var instance = GetInstance();
             var subject = instance._subject;
-            return subject.SubscribeAwait(addToComponent, onNext);
+            var entity = new Entity<bool>(false);
+            return subject.SubscribeAwait(entity, onNext);
         }
 
         /// <summary>
         /// 指定した状態のイベントが発火するまで待機する
         /// </summary>
-        /// <param name="ev"></param>
+        /// <param name="predicate"></param>
         /// <param name="token"></param>
+        /// <param name="timeout"></param>
         /// <returns></returns>
         public static async UniTask WaitForEvent(Func<TEvent, bool> predicate, CancellationToken token, TimeSpan? timeout = null) {
             var instance = GetInstance();
@@ -112,13 +129,10 @@ namespace PinShot.Event {
 
         public void Dispose() {
             _subject?.Dispose();
-        }
-
-        public static void DisposeAll() {
             if (_instance != null) {
-                _instance.Dispose();
                 _instance = null;
             }
         }
+
     }
 }

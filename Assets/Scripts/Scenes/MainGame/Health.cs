@@ -9,8 +9,14 @@ namespace PinShot.Scenes.MainGame {
         /// <summary>
         /// 耐久力
         /// </summary>
-        private ReactiveProperty<float> _current;
-        public ReactiveProperty<float> Current => _current ??= new();
+        private ReactiveProperty<float> _current = new();
+        public Observable<(float prev, float current, float max)> OnChangeValue
+            => _current.Pairwise().Select(pair => (pair.Previous, pair.Current, MaxValue));
+
+        /// <summary>
+        /// 現在の値
+        /// </summary>
+        public float Current => _current.Value;
 
         /// <summary>
         /// 最大耐久力
@@ -22,7 +28,7 @@ namespace PinShot.Scenes.MainGame {
         /// </summary>
         public void Initialize(float maxValue) {
             MaxValue = maxValue;
-            Current.Value = maxValue;
+            _current.Value = maxValue;
         }
 
         /// <summary>
@@ -30,16 +36,16 @@ namespace PinShot.Scenes.MainGame {
         /// </summary>
         /// <param name="damage"></param>
         public void TakeDamage(float damage) {
-            if (Current == null) {
+            if (_current == null) {
                 throw new InvalidOperationException("Health is not initialized.");
             }
 
-            var current = Current.Value;
+            var current = _current.Value;
             if (current <= 0) {
                 return;
             }
             current = Math.Max(current - damage, 0);
-            Current.Value = current;
+            _current.Value = current;
         }
 
         /// <summary>
@@ -47,21 +53,21 @@ namespace PinShot.Scenes.MainGame {
         /// </summary>
         /// <param name="heal"></param>
         public void Heal(float heal) {
-            if (Current == null) {
+            if (_current == null) {
                 throw new InvalidOperationException("Health is not initialized.");
             }
 
-            var current = Current.Value;
+            var current = _current.Value;
             if (current >= MaxValue) {
                 return;
             }
             current = Math.Min(current + heal, MaxValue);
-            Current.Value = current;
+            _current.Value = current;
         }
 
 
         public void Dispose() {
-            Current?.Dispose();
+            _current?.Dispose();
         }
     }
 }
