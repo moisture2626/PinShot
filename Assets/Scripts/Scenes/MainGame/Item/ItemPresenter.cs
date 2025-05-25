@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using PinShot.Event;
-using PinShot.Extensions;
 using PinShot.Singletons;
 using R3;
 using UnityEngine;
@@ -25,7 +24,6 @@ namespace PinShot.Scenes.MainGame.Item {
         }
 
         public void Initialize() {
-            Debug.Log("ItemPresenter Initialize".SetColor(Color.green));
             // ゲームが終わったらプールをクリアする
             EventManager<GameStateEvent>.Subscribe(ev => {
                 _isActive = ev.State == GameState.Play;

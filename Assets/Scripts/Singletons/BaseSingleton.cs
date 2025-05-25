@@ -11,7 +11,6 @@ namespace PinShot.Singletons {
                 return;
             }
             Initialize();
-            DontDestroyOnLoad(gameObject);
             Instance = (T)this;
         }
 
