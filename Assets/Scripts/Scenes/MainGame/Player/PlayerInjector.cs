@@ -3,15 +3,14 @@ using VContainer;
 using VContainer.Unity;
 
 namespace PinShot.Scenes.MainGame.Player {
-    public class PlayerInjector : LifetimeScope {
+    public class PlayerInjector : MonoBehaviour {
         [SerializeField] private PlayerView _view;
         [SerializeField] private MissileLauncher _missileLauncher;
         [SerializeField] private Transform _leftLimit;
         [SerializeField] private Transform _rightLimit;
 
 
-        protected override void Configure(IContainerBuilder builder) {
-            Debug.Log("Starting registration in PlayerInjector");
+        public void Configure(IContainerBuilder builder) {
             builder.RegisterComponent(_view);
             builder.RegisterComponent(_missileLauncher);
             builder.RegisterEntryPoint<PlayerPresenter>(Lifetime.Scoped)

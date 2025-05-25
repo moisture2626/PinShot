@@ -1,11 +1,12 @@
+using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using PinShot.Event;
+using PinShot.Extensions;
 using PinShot.Scenes.MainGame.UI;
 using PinShot.Singletons;
 using PinShot.UI;
 using R3;
-using System;
-using System.Threading;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -13,17 +14,27 @@ namespace PinShot.Scenes.MainGame {
     public class MainGamePresenter : IStartable, IDisposable {
 
         private CancellationDisposable _gameFlowCancellation;
-        private ScoreManager _scoreManager;
-        private GameUI _gameUI;
-        public MainGamePresenter(GameUI gameUI, ScoreManager scoreManager) {
-            _gameUI = gameUI;
+        private ScoreModel _score;
+        private IGameUIInitializer _uiInitializer;
+        private IScoreView _scoreView;
+        private IHighScoreView _highScoreView;
+
+        private CompositeDisposable _disposables = new CompositeDisposable();
+
+        public MainGamePresenter(IGameUIInitializer uIInitializer, IHighScoreView highScoreView, IScoreView scoreView, ScoreModel scoreManager) {
+            _uiInitializer = uIInitializer;
+            _highScoreView = highScoreView;
+            _scoreView = scoreView;
             _gameFlowCancellation = new();
-            _scoreManager = scoreManager;
+            _score = scoreManager;
         }
 
         public void Start() {
-            _gameFlowCancellation = new CancellationDisposable();
+            EventManager<GameStateEvent>
+                .Subscribe(ev => Debug.Log($"GameState Changed: {ev.State}".SetColor(Color.green)))
+                .AddTo(_disposables);
 
+            _gameFlowCancellation = new CancellationDisposable();
             GameLoop(_gameFlowCancellation.Token).Forget();
         }
 
@@ -42,13 +53,13 @@ namespace PinShot.Scenes.MainGame {
 
             while (!token.IsCancellationRequested) {
                 // UIリセット
-                _gameUI.Initialize();
-                _gameUI.SetHighScore(_scoreManager.HighScore);
+                _uiInitializer.Initialize();
+                _highScoreView.SetHighScore(_score.HighScore);
                 // スコアリセット
-                _scoreManager.Reset();
-                _scoreManager.OnChangeScore.Subscribe(s => {
+                _score.Reset();
+                _score.OnChangeScore.Subscribe(s => {
                     // スコアUIの更新
-                    _gameUI.SetScore(s);
+                    _scoreView.SetScore(s);
                 }).AddTo(token);
 
                 // 開始前のカウントダウンを待機
@@ -68,9 +79,9 @@ namespace PinShot.Scenes.MainGame {
                 Time.timeScale = 1;
                 EventManager<GameStateEvent>.TriggerEvent(GameStateEvent.Create(GameState.Result));
                 // スコアを保存
-                _scoreManager.Save();
+                _score.Save();
                 // リザルト表示
-                ResultWindow.OpenAsync(_scoreManager, token).Forget();
+                ResultWindow.OpenAsync(_score, token).Forget();
                 ScreenFade.Instance.FadeInAsync(0.2f, Color.black, token).Forget();
 
                 // リザルトウィンドウの操作を待機
@@ -81,6 +92,7 @@ namespace PinShot.Scenes.MainGame {
 
         public void Dispose() {
             _gameFlowCancellation?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

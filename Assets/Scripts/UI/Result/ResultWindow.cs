@@ -28,10 +28,10 @@ namespace PinShot.UI {
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async UniTask OpenAsync(ScoreManager scoreManager, CancellationToken token) {
+        public static async UniTask OpenAsync(ScoreModel score, CancellationToken token) {
             var window = WindowManager.Open<ResultWindow>();
             var presenter = new ResultPresenter();
-            presenter.Initialize(window, scoreManager);
+            presenter.Initialize(window, score);
 
             await window.OnDestroyAsync().AttachExternalCancellation(token);
         }

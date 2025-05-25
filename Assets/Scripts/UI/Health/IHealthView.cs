@@ -4,7 +4,7 @@ namespace PinShot.UI {
     /// </summary>
     public interface IHealthView {
 
-        public void Initialize(float max);
+        public void InitializeHealth(float max);
         /// <summary>
         /// 体力を表示する
         /// </summary>

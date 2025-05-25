@@ -11,7 +11,7 @@ namespace PinShot.UI {
         private List<GameObject> _lifeIcons = new();
         private bool _isInitialized = false;
 
-        public void Initialize(float max) {
+        public void InitializeHealth(float max) {
             if (_isInitialized) {
                 return;
             }

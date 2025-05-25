@@ -1,24 +1,28 @@
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using PinShot.Database;
 using PinShot.Event;
 using PinShot.Scenes.MainGame.Item;
+using PinShot.Scenes.MainGame.Stage;
+using PinShot.Singletons;
 using PinShot.UI;
 using R3;
 using UnityEngine;
-using UnityEngine.Pool;
+using VContainer;
+using VContainer.Unity;
 
 namespace PinShot.Scenes.MainGame.Ball {
     /// <summary>
     /// ボールを発射と管理をするクラス
     /// </summary>
-    public class BallManager : MonoBehaviour {
-        [SerializeField] private BallObject _ballPrefab;
-        [SerializeField] private BallLaunchTrigger _trigger;
-        [SerializeField] private Transform _deadLine;
-        private ObjectPool<BallObject> _ballPool;
+    public class BallLauncherPresenter : IInitializable, IDisposable {
+        [Inject] private BallLauncher _launcher;
+        private Transform _deadLine;
+
         private BallSettings _ballSettings;
-        private BallManagerSettings _launcherSettings;
+        private BallLauncherSettings _launcherSettings;
+        private CompositeDisposable _disposables = new CompositeDisposable();
         private CancellationDisposable _timerCancellation;
 
         Subject<float> _timerSubject = new();
@@ -29,27 +33,24 @@ namespace PinShot.Scenes.MainGame.Ball {
 
         private Health _health;
         private int _combo = 0;
-        private GameUI _gameUI;
+        [Inject] private IHealthView _healthView;
+        [Inject] private IComboView _comboView;
+        [Inject] private IIntervalView _nextGauge;
 
-        public void Initialize(BallManagerSettings launcherSettings, BallSettings ballSettings, GameUI gameUI) {
-            _ballSettings = ballSettings;
-            _launcherSettings = launcherSettings;
-            _trigger.Initialize(launcherSettings);
-            _gameUI = gameUI;
-            _ballPool = new ObjectPool<BallObject>(
-                CreateBall,
-                OnGetBall,
-                OnReleaseBall,
-                OnDestroyBall,
-                defaultCapacity: 20
-            );
+        public BallLauncherPresenter(MasterDataManager mst, Transform deadLine) {
+            _deadLine = deadLine;
+            _ballSettings = mst.GetTable<BallSettings>();
+            _launcherSettings = mst.GetTable<BallLauncherSettings>();
+        }
 
+        public void Initialize() {
+            Debug.Log("BallLauncherPresenter Initialized");
             // ゲームオーバーの処理をHealthでやる
             _health = new Health();
             _health.OnChangeValue
                 .Where(_ => _isRunning)
                 .Subscribe(h => {
-                    _gameUI.HealthView.SetHealth(h.prev, h.current, h.max);
+                    _healthView.SetHealth(h.prev, h.current, h.max);
                     if (h.current <= 0) {
                         // ゲームオーバー
                         EventManager<GameStateEvent>.TriggerEvent(new GameStateEvent(GameState.GameOver));
@@ -57,11 +58,12 @@ namespace PinShot.Scenes.MainGame.Ball {
                 });
 
             // イベントの購読
-            EventManager<GameStateEvent>.Subscribe(this, ev => {
+            EventManager<GameStateEvent>.Subscribe(ev => {
+                Debug.Log($"GameState Changed: {ev.State}");
                 if (ev.State == GameState.Standby) {
-                    int maxCount = launcherSettings.GameOverCount;
-                    _gameUI.HealthView.Initialize(maxCount);
-                    _health.Initialize(launcherSettings.GameOverCount);
+                    int maxCount = _launcherSettings.GameOverCount;
+                    _healthView.InitializeHealth(maxCount);
+                    _health.Initialize(_launcherSettings.GameOverCount);
                 }
                 if (ev.State == GameState.Play && !_isRunning) {
                     BeginLaunch();
@@ -69,15 +71,15 @@ namespace PinShot.Scenes.MainGame.Ball {
                 if (ev.State == GameState.GameOver) {
                     Stop();
                 }
-            });
+            }).AddTo(_disposables);
 
-
+            _disposables.Add(_health);
         }
 
         /// <summary>
         /// 発射を開始する
         /// </summary>
-        public void BeginLaunch() {
+        private void BeginLaunch() {
             _launchCount = 0;
             _isRunning = true;
             _timerCancellation?.Dispose();
@@ -104,7 +106,7 @@ namespace PinShot.Scenes.MainGame.Ball {
 
                 var remain = interval - elapsedTime;
                 // ゲージ表示
-                _gameUI.SetNextGauge(remain / interval);
+                _nextGauge.SetInterval(remain, interval);
 
                 _timerSubject.OnNext(remain);
                 if (remain <= 0) {
@@ -133,7 +135,7 @@ namespace PinShot.Scenes.MainGame.Ball {
         /// 1発だけ発射
         /// </summary>
         private async UniTask LaunchBall(CancellationToken token) {
-            var ball = _ballPool.Get();
+            var ball = _launcher.GetBall();
             _launchCount++;
             // 耐久力がなくなるか、デッドラインを越えるまで待機
             using var internalCancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
@@ -142,7 +144,7 @@ namespace PinShot.Scenes.MainGame.Ball {
                 WaitForBallDead(ball, internalCancellation.Token)
             );
             // プールに戻す
-            _ballPool.Release(ball);
+            _launcher.ReleaseBall(ball);
 
             // WhenAnyの処理を全部終わらせる
             internalCancellation.Cancel();
@@ -159,7 +161,7 @@ namespace PinShot.Scenes.MainGame.Ball {
             token.ThrowIfCancellationRequested();
             // ミスカウントとコンボリセット
             _combo = 0;
-            _gameUI.SetCombo(_combo);
+            _comboView.SetCombo(_combo);
             _health.TakeDamage(1);
         }
 
@@ -175,10 +177,10 @@ namespace PinShot.Scenes.MainGame.Ball {
             // 破壊したらスコアとコンボ加算
             EventManager<ScoreEvent>.TriggerEvent(new ScoreEvent(_ballSettings.Score, _combo));
             _combo++;
-            _gameUI.SetCombo(_combo);
+            _comboView.SetCombo(_combo);
 
             // アイテムドロップ
-            bool drop = Random.Range(0f, 1f) < _ballSettings.ItemDropRate;
+            bool drop = UnityEngine.Random.Range(0f, 1f) < _ballSettings.ItemDropRate;
             if (drop) {
                 ItemManager.DropItem(ball.transform.position);
             }
@@ -192,29 +194,14 @@ namespace PinShot.Scenes.MainGame.Ball {
             _combo = 0;
             _timerCancellation?.Dispose();
             _timerCancellation = null;
-            _ballPool.Clear();
+            _launcher.Clear();
         }
 
-        void OnDestroy() {
+        public void Dispose() {
             _timerCancellation?.Dispose();
+            _disposables?.Dispose();
         }
 
-        #region Pool
-        private BallObject CreateBall() {
-            var ball = Instantiate(_ballPrefab, transform);
-            return ball;
-        }
-        private void OnGetBall(BallObject ball) {
-            ball.gameObject.SetActive(true);
-            ball.transform.position = transform.position;
-            ball.Initialize(_ballSettings);
-        }
-        private void OnReleaseBall(BallObject ball) {
-            ball.gameObject.SetActive(false);
-        }
-        private void OnDestroyBall(BallObject ball) {
-            Destroy(ball.gameObject);
-        }
-        #endregion
+
     }
 }

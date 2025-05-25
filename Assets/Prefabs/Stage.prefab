@@ -404,10 +404,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7213717941058965176}
-  - component: {fileID: 2944403720403089509}
-  - component: {fileID: 1692640656518228296}
+  - component: {fileID: 3472626885289029595}
   m_Layer: 9
-  m_Name: BallLauncher
+  m_Name: Launcher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -429,7 +428,7 @@ Transform:
   - {fileID: 8074182608014886064}
   m_Father: {fileID: 7889463413792340333}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2944403720403089509
+--- !u!114 &3472626885289029595
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -438,25 +437,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4135193784295145607}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55f045f92a534894499bee1eb4572777, type: 3}
+  m_Script: {fileID: 11500000, guid: 1a458f159ca687144ac8c5cbbe3bb150, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _ballPrefab: {fileID: 6702009811524354946, guid: 1082d85b6d9c5884ca7e82dbb8befd43, type: 3}
-  _trigger: {fileID: 4523128944060509511}
-  _deadLine: {fileID: 685461479544393151}
---- !u!114 &1692640656518228296
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4135193784295145607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 629bc4c84fe16ce41b64c1295ca7dff2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _ballManager: {fileID: 2944403720403089509}
 --- !u!1 &4874491397213704487
 GameObject:
   m_ObjectHideFlags: 0
@@ -703,6 +687,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7889463413792340333}
+  - component: {fileID: 2670518045626903964}
   m_Layer: 9
   m_Name: Stage
   m_TagString: Untagged
@@ -733,6 +718,21 @@ Transform:
   - {fileID: 685461479544393151}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2670518045626903964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7509036679796005354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5972d1113ac7c6d4484812db2783598e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _launcher: {fileID: 3472626885289029595}
+  _trigger: {fileID: 4523128944060509511}
+  _deadLine: {fileID: 685461479544393151}
 --- !u!1 &8382922263784298955
 GameObject:
   m_ObjectHideFlags: 0

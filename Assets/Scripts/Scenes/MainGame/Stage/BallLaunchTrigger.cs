@@ -1,11 +1,15 @@
 using PinShot.Database;
+using PinShot.Singletons;
 using UnityEngine;
+using VContainer;
 
 namespace PinShot.Scenes.MainGame.Ball {
     public class BallLaunchTrigger : MonoBehaviour, IBallEnter {
         private float _launchVelocity;
         private float _randomRange;
-        public void Initialize(BallManagerSettings settings) {
+        [Inject]
+        public void Construct(MasterDataManager mst) {
+            var settings = mst.GetTable<BallLauncherSettings>();
             _launchVelocity = settings.LaunchForce;
             _randomRange = settings.ForceRandomRange;
         }

@@ -1,6 +1,7 @@
 using PinShot.Event;
-using PinShot.Scenes.MainGame.Ball;
 using PinShot.Scenes.MainGame.Item;
+using PinShot.Scenes.MainGame.Player;
+using PinShot.Scenes.MainGame.Stage;
 using PinShot.UI;
 using UnityEngine;
 using VContainer;
@@ -11,13 +12,14 @@ namespace PinShot.Scenes.MainGame {
     /// メインゲームシーンのDI
     /// </summary>
     public class MainGameInjector : LifetimeScope {
-        [SerializeField] private BallManagerInjector _ballManagerInjector;
+        [SerializeField] private StageInjector _stageInjector;
         [SerializeField] private ItemManagerInjector _itemManagerInjector;
-        [SerializeField] private Canvas _uiCanvas;
+        [SerializeField] private PlayerInjector _playerInjector;
         [SerializeField] private GameUI _gameUI;
+        [SerializeField] private Canvas _uiCanvas;
 
         protected override void Configure(IContainerBuilder builder) {
-            Debug.Log("Starting registration in MainGameInjector");
+            VContainerSettings.Instance.EnableDiagnostics = true;
             _uiCanvas.renderMode = RenderMode.ScreenSpaceCamera;
             _uiCanvas.worldCamera = Camera.main;
 
@@ -25,11 +27,16 @@ namespace PinShot.Scenes.MainGame {
             _ = new EventManager<GameStateEvent>();
             _ = new EventManager<ScoreEvent>();
 
-            _ballManagerInjector.Initialize(_gameUI);
+            // コンテナに登録
+            builder.Register<ScoreModel>(Lifetime.Scoped);
+
+            builder.RegisterComponent(_gameUI).AsImplementedInterfaces();
+
             _itemManagerInjector.Initialize();
-            builder.RegisterComponent(_gameUI);
-            builder.Register<ScoreManager>(Lifetime.Singleton);
-            builder.RegisterEntryPoint<MainGamePresenter>(Lifetime.Singleton);
+            _stageInjector.Configure(builder);
+            _playerInjector.Configure(builder);
+
+            builder.RegisterEntryPoint<MainGamePresenter>(Lifetime.Scoped);
         }
     }
 }

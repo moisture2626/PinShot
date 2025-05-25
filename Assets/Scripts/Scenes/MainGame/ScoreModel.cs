@@ -1,10 +1,10 @@
-using System;
 using PinShot.Event;
 using PinShot.Singletons;
 using R3;
+using System;
 
 namespace PinShot.Scenes.MainGame {
-    public class ScoreManager : IDisposable {
+    public class ScoreModel : IDisposable {
 
         private ReactiveProperty<int> _score;
         public int Score => _score.Value;
@@ -14,7 +14,7 @@ namespace PinShot.Scenes.MainGame {
         private IDisposable _scoreEventSubscription;
         private SaveDataManager _saveDataManager;
 
-        public ScoreManager(SaveDataManager saveDataManager) {
+        public ScoreModel(SaveDataManager saveDataManager) {
             _saveDataManager = saveDataManager;
             _highScore = saveDataManager.Load<ScoreData>("HighScore").HighScore;
             // スコア計算
