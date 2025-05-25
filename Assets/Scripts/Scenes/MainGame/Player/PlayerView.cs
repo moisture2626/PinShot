@@ -10,7 +10,7 @@ namespace PinShot.Scenes.MainGame.Player {
         public Observable<(ItemType type, float value)> ItemEffectObservable => _itemEffectSubject ??= new();
         [Inject]
         public void Construct() {
-            Debug.Log("PlayerView Construct");
+            // 今のところ特にすることない
         }
         void OnTriggerEnter2D(Collider2D collision) {
             if (collision.gameObject.GetComponent<ItemObject>() is ItemObject item) {

@@ -4,20 +4,27 @@ using PinShot.Scenes.MainGame.UI;
 using PinShot.Singletons;
 using PinShot.UI;
 using R3;
+using System;
 using System.Threading;
 using UnityEngine;
+using VContainer.Unity;
 
 namespace PinShot.Scenes.MainGame {
-    public class MainGameManager : MonoBehaviour {
+    public class MainGamePresenter : IStartable, IDisposable {
 
-        private CancellationTokenSource _gameFlowCancellation;
+        private CancellationDisposable _gameFlowCancellation;
         private ScoreManager _scoreManager;
         private GameUI _gameUI;
-        public void Initialize(GameUI gameUI) {
+        public MainGamePresenter(GameUI gameUI, ScoreManager scoreManager) {
             _gameUI = gameUI;
-            _gameFlowCancellation = CancellationTokenSource.CreateLinkedTokenSource(destroyCancellationToken);
-            _scoreManager = new ScoreManager();
-            _scoreManager.Initialize();
+            _gameFlowCancellation = new();
+            _scoreManager = scoreManager;
+        }
+
+        public void Start() {
+            _gameFlowCancellation = new CancellationDisposable();
+
+            GameLoop(_gameFlowCancellation.Token).Forget();
         }
 
 
@@ -28,6 +35,7 @@ namespace PinShot.Scenes.MainGame {
         /// <returns></returns>
         public async UniTask GameLoop(CancellationToken token) {
             Debug.Log("GameLoop Start");
+
             // BGM再生開始
             SoundManager.Instance.PlayBGM("Game", 0.2f);
             EventManager<GameStateEvent>.TriggerEvent(GameStateEvent.Create(GameState.Standby));
@@ -69,6 +77,10 @@ namespace PinShot.Scenes.MainGame {
                 await EventManager<GameStateEvent>.WaitForEvent(ev => ev.State == GameState.Standby, token);
                 token.ThrowIfCancellationRequested();
             }
+        }
+
+        public void Dispose() {
+            _gameFlowCancellation?.Dispose();
         }
     }
 }

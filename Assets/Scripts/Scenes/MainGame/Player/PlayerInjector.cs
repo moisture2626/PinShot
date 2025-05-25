@@ -9,6 +9,7 @@ namespace PinShot.Scenes.MainGame.Player {
         [SerializeField] private Transform _leftLimit;
         [SerializeField] private Transform _rightLimit;
 
+
         protected override void Configure(IContainerBuilder builder) {
             Debug.Log("Starting registration in PlayerInjector");
             builder.RegisterComponent(_view);
