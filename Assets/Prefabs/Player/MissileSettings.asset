@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 10
   _damage: 1
+  _maxDamage: 3
   _explosionLifeTime: 0.3
   _explosionEffectLifetime: 1
-  _explosionForce: 5
+  _explosionForce: 3

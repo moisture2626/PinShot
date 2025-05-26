@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _launchForce: 8
   _forceRandomRange: 4
-  _launchIntervalMax: 12
+  _launchIntervalMax: 8
   _launchIntervalMin: 2
   _intervalMaxCount: 20
   _gameOverCount: 3
