@@ -17,4 +17,4 @@ MonoBehaviour:
   _maxDamage: 3
   _explosionLifeTime: 0.3
   _explosionEffectLifetime: 1
-  _explosionForce: 3
+  _explosionForce: 3.5
