@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: MissileSettings
   m_EditorClassIdentifier: 
   _speed: 10
-  _damage: 1
-  _maxDamage: 3
+  _damage: 3
+  _maxDamage: 8
   _explosionLifeTime: 0.3
   _explosionEffectLifetime: 1
-  _explosionForce: 3.5
+  _explosionForce: 5
