@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: PlayerControllSettings
   m_EditorClassIdentifier: 
   _moveSpeed: 7
-  _fireInterval: 0.5
-  _minInterval: 0.2
+  _fireInterval: 0.6
+  _minInterval: 0.35
   _moveAction:
     m_Name: Move
     m_Type: 0
