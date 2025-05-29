@@ -31,6 +31,9 @@ namespace PinShot.Scenes.MainGame.Stage {
             return _ballPool.Get();
         }
         public void ReleaseBall(BallObject ball) {
+            if (ball == null)
+                return;
+
             _ballPool.Release(ball);
         }
         public void Clear() {

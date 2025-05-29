@@ -136,16 +136,23 @@ namespace PinShot.Scenes.MainGame.Ball {
             var ball = _launcher.GetBall();
             _launchCount++;
             // 耐久力がなくなるか、デッドラインを越えるまで待機
+            // ゲーム終了も待つ
             using var internalCancellation = CancellationTokenSource.CreateLinkedTokenSource(token);
-            await UniTask.WhenAny(
-                WaitForOverDeadLine(ball, internalCancellation.Token),
-                WaitForBallDead(ball, internalCancellation.Token)
-            );
-            // プールに戻す
-            _launcher.ReleaseBall(ball);
+            try {
+                await UniTask.WhenAny(
+                    WaitForOverDeadLine(ball, internalCancellation.Token),
+                    WaitForBallDead(ball, internalCancellation.Token)
+                );
+            }
+            finally {
+                // プールに戻す
+                _launcher.ReleaseBall(ball);
 
-            // WhenAnyの処理を全部終わらせる
-            internalCancellation.Cancel();
+                // WhenAnyの処理を全部終わらせる
+                internalCancellation.Cancel();
+            }
+
+
         }
 
         /// <summary>
@@ -192,7 +199,6 @@ namespace PinShot.Scenes.MainGame.Ball {
             _combo = 0;
             _timerCancellation?.Dispose();
             _timerCancellation = null;
-            _launcher.Clear();
         }
 
         public void Dispose() {
