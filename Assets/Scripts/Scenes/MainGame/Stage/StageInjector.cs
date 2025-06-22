@@ -8,11 +8,13 @@ namespace PinShot.Scenes.MainGame.Stage {
         [SerializeField] private BallLauncher _launcher;
         [SerializeField] private BallLaunchTrigger _trigger;
         [SerializeField] private Transform _deadLine;
+        [SerializeField] private SlideObstacle _slideObstacle;
 
         public void Configure(IContainerBuilder builder) {
 
             builder.RegisterComponent(_launcher);
             builder.RegisterComponent(_trigger);
+            builder.RegisterComponent(_slideObstacle);
 
             builder.RegisterEntryPoint<BallLauncherPresenter>(Lifetime.Scoped).WithParameter("deadLine", _deadLine);
 
